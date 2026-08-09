@@ -193,23 +193,24 @@
                         </button>
                     </div>
 
-                    <!-- Área do QR Code gerado -->
+                    <!-- Área do QR Code gerado e Botão de Copiar -->
                     <div id="qr-container" class="hidden text-center space-y-4 pt-4 border-t border-gray-800">
                         <div class="p-4 bg-white rounded-xl inline-block shadow-inner">
                             <img id="qr-code-image" src="" alt="QR Code Pix" class="w-48 h-48 mx-auto">
                         </div>
                         <p class="text-xs text-gray-400">Escaneie o QR Code acima com o aplicativo do seu banco.</p>
-                        <div id="payment-success-msg" class="hidden p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-bold text-sm">
+                        
+                        <div id="payment-success-msg" class="hidden p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-bold text-sm">
                             Obrigado! 😊
                         </div>
-                        <!-- Adicione este botão logo abaixo da imagem do QR Code na sua área de pagamento -->
-<div id="area-pix" style="text-align: center; margin-top: 15px; display: none;">
-    <img id="qr-code-img" src="" alt="QR Code Pix" style="max-width: 200px; display: block; margin: 0 auto;" />
-    <p id="copia-cola-texto" style="word-break: break-all; font-size: 12px; color: #aaa; margin: 10px 0; max-height: 60px; overflow-y: auto;"></p>
-    <button id="btn-copiar" onclick="copiarPix()" style="background-color: #4F46E5; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: bold; width: 100%;">
-        📋 Copiar Código Pix
-    </button>
-</div>
+
+                        <!-- Área Copia e Cola -->
+                        <div id="area-pix" style="text-align: center; margin-top: 15px;">
+                            <p id="copia-cola-texto" style="word-break: break-all; font-size: 11px; color: #888; margin: 10px 0; max-height: 50px; overflow-y: auto; background: #0b0f19; padding: 6px; border-radius: 6px; border: 1px solid #374151;"></p>
+                            <button id="btn-copiar" onclick="copiarPix()" style="background-color: #4F46E5; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; font-size: 14px;">
+                                📋 Copiar Código Pix
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -225,6 +226,7 @@
     <!-- SCRIPTS -->
     <script>
         const WHATSAPP_NUMBER = "11920065761";
+        let codigoPixCopiaECola = "";
 
         const tentsData = [
             { id: 't1', name: 'Tenda Cristal Elegance 5x5', price: 450, image: 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?auto=format&fit=crop&q=80&w=1200' },
@@ -414,7 +416,6 @@
             window.open(`https://wa.me/55${WHATSAPP_NUMBER}?text=${message}`, '_blank');
         }
 
-        // Função de Busca Automática de CEP em tempo real
         async function buscarCep(cep) {
             const cepLimpo = cep.replace(/\D/g, '');
             if (cepLimpo.length !== 8) return;
@@ -432,6 +433,22 @@
             } catch (error) {
                 console.error("Erro ao buscar CEP:", error);
             }
+        }
+
+        function copiarPix() {
+            if (!codigoPixCopiaECola) return;
+            navigator.clipboard.writeText(codigoPixCopiaECola).then(() => {
+                const btn = document.getElementById('btn-copiar');
+                btn.innerText = "Copiado com sucesso! ✅";
+                btn.style.backgroundColor = "#10B981";
+                
+                setTimeout(() => {
+                    btn.innerText = "📋 Copiar Código Pix";
+                    btn.style.backgroundColor = "#4F46E5";
+                }, 3000);
+            }).catch(err => {
+                alert("Erro ao tentar copiar o código.");
+            });
         }
 
         async function checkoutMercadoPago() {
@@ -473,10 +490,11 @@
                 const data = await response.json();
                 
                 if (data.point_of_interaction && data.point_of_interaction.transaction_data) {
-                    const qrCodeString = data.point_of_interaction.transaction_data.qr_code;
+                    codigoPixCopiaECola = data.point_of_interaction.transaction_data.qr_code;
                     const qrImage = document.getElementById('qr-code-image');
                     
-                    qrImage.src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(qrCodeString)}`;
+                    qrImage.src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(codigoPixCopiaECola)}`;
+                    document.getElementById('copia-cola-texto').innerText = codigoPixCopiaECola;
 
                     document.getElementById('qr-container').classList.remove('hidden');
                     document.getElementById('payment-success-msg').classList.remove('hidden');
