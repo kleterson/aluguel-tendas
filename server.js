@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const { MercadoPagoConfig, Payment } = require('mercadopago');
+const crypto = require('crypto');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -29,7 +30,7 @@ app.post('/api/pagamento', async (req, res) => {
                 last_name: payer.name.split(' ').slice(1).join(' ') || 'Cliente',
                 identification: {
                     type: 'CPF',
-                    number: payer.cpf
+                    number: payer.cpf.replace(/\D/g, '')
                 },
                 address: {
                     street_name: address.street,
@@ -39,10 +40,16 @@ app.post('/api/pagamento', async (req, res) => {
             }
         };
 
-        const response = await payment.create({ body });
+        const idempotencyKey = crypto.randomUUID();
+
+        const response = await payment.create({ 
+            body, 
+            requestOptions: { idempotencyKey } 
+        });
+
         res.status(200).json(response);
     } catch (error) {
-        console.error("Erro detalhado do Mercado Pago:", error.api_response?.status ? error.api_response : error);
+        console.error("ERRO DETALHADO DO MERCADO PAGO:", error.api_response?.status ? error.api_response : error);
         res.status(500).json({ error: error.message || "Erro interno no servidor" });
     }
 });
