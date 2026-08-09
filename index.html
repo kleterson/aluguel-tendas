@@ -61,7 +61,6 @@
 
         <!-- PÁGINA INICIAL -->
         <section id="page-home" class="page-section space-y-16">
-            <!-- ANÚNCIO CINEMATOGRÁFICO -->
             <div class="relative rounded-3xl overflow-hidden glass p-8 sm:p-14 cinematic-glow border border-indigo-500/20">
                 <div class="absolute inset-0 bg-gradient-to-r from-indigo-950/80 via-transparent to-violet-950/85 pointer-events-none"></div>
                 <div class="relative z-10 max-w-2xl space-y-6">
@@ -72,7 +71,7 @@
                         Transforme seu evento em um <span class="bg-gradient-to-r from-indigo-400 to-violet-400 bg-clip-text text-transparent">espetáculo inesquecível</span>.
                     </h1>
                     <p class="text-gray-300 text-base sm:text-lg leading-relaxed font-light">
-                        Estruturas arquitetônicas de alto padrão e sonorização imersiva de última geração para casamentos, corporativos e grandes celebrações. O cenário perfeito desenhado sob medida para você.
+                        Estruturas arquitetônicas de alto padrão e sonorização imersiva de última geração para casamentos, corporativos e grandes celebrações.
                     </p>
                     <div class="flex flex-wrap gap-4 pt-2">
                         <button onclick="switchPage('tents')" class="px-7 py-3.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold shadow-lg shadow-indigo-600/30 transition flex items-center space-x-2">
@@ -84,31 +83,9 @@
                     </div>
                 </div>
             </div>
-
-            <!-- DESTAQUES RÁPIDOS -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div onclick="switchPage('tents')" class="group cursor-pointer glass rounded-2xl p-8 hover:border-indigo-500/50 transition duration-300 relative overflow-hidden">
-                    <div class="absolute inset-0 bg-cover bg-center opacity-25 group-hover:scale-105 transition duration-500" style="background-image: url('https://images.unsplash.com/photo-1519167758481-83f550bb49b3?auto=format&fit=crop&q=80&w=1200')"></div>
-                    <div class="relative z-10 space-y-4">
-                        <div class="w-12 h-12 rounded-xl bg-indigo-600/20 border border-indigo-500/40 flex items-center justify-center text-indigo-400 text-xl"><i class="fa-solid fa-campground"></i></div>
-                        <h3 class="text-2xl font-bold text-white">Tendas de Luxo</h3>
-                        <p class="text-gray-400 text-sm">Modelos cristal, piramidais e tensionadas com acabamento impecável.</p>
-                        <span class="inline-flex items-center space-x-2 text-indigo-400 font-semibold text-sm"><span>Explorar Tendas</span> <i class="fa-solid fa-chevron-right text-xs"></i></span>
-                    </div>
-                </div>
-                <div onclick="switchPage('sound')" class="group cursor-pointer glass rounded-2xl p-8 hover:border-indigo-500/50 transition duration-300 relative overflow-hidden">
-                    <div class="absolute inset-0 bg-cover bg-center opacity-25 group-hover:scale-105 transition duration-500" style="background-image: url('https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&q=80&w=1200')"></div>
-                    <div class="relative z-10 space-y-4">
-                        <div class="w-12 h-12 rounded-xl bg-violet-600/20 border border-violet-500/40 flex items-center justify-center text-violet-400 text-xl"><i class="fa-solid fa-volume-high"></i></div>
-                        <h3 class="text-2xl font-bold text-white">Sonorização Profissional</h3>
-                        <p class="text-gray-400 text-sm">Sistemas line array, subwoofers potentes e microfones de alta fidelidade.</p>
-                        <span class="inline-flex items-center space-x-2 text-violet-400 font-semibold text-sm"><span>Explorar Som</span> <i class="fa-solid fa-chevron-right text-xs"></i></span>
-                    </div>
-                </div>
-            </div>
         </section>
 
-        <!-- PÁGINA DE TENDAS (10 ITENS + PAGINAÇÃO) -->
+        <!-- PÁGINA DE TENDAS -->
         <section id="page-tents" class="page-section hidden space-y-8">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-800 pb-6">
                 <div>
@@ -119,11 +96,7 @@
                     <span id="tents-page-indicator" class="font-bold text-indigo-400">Página 1 de 2</span>
                 </div>
             </div>
-
-            <!-- Grade de Tendas -->
             <div id="tents-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
-
-            <!-- Botão Próxima Página -->
             <div class="flex justify-center pt-6">
                 <button id="tents-next-btn" onclick="nextTentsPage()" class="px-8 py-3 rounded-xl bg-gray-800 hover:bg-gray-700 text-white font-semibold border border-gray-700 transition flex items-center space-x-2">
                     <span id="tents-btn-text">Ir para Página 2</span> <i class="fa-solid fa-arrow-right"></i>
@@ -131,7 +104,7 @@
             </div>
         </section>
 
-        <!-- PÁGINA DE SOM (10 ITENS + PAGINAÇÃO) -->
+        <!-- PÁGINA DE SOM -->
         <section id="page-sound" class="page-section hidden space-y-8">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-800 pb-6">
                 <div>
@@ -142,11 +115,7 @@
                     <span id="sound-page-indicator" class="font-bold text-violet-400">Página 1 de 2</span>
                 </div>
             </div>
-
-            <!-- Grade de Som -->
             <div id="sound-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
-
-            <!-- Botão Próxima Página -->
             <div class="flex justify-center pt-6">
                 <button id="sound-next-btn" onclick="nextSoundPage()" class="px-8 py-3 rounded-xl bg-gray-800 hover:bg-gray-700 text-white font-semibold border border-gray-700 transition flex items-center space-x-2">
                     <span id="sound-btn-text">Ir para Página 2</span> <i class="fa-solid fa-arrow-right"></i>
@@ -154,17 +123,50 @@
             </div>
         </section>
 
-        <!-- PÁGINA DO CARRINHO E CHECKOUT -->
+        <!-- PÁGINA DO CARRINHO E CHECKOUT COM ENDEREÇO -->
         <section id="page-cart" class="page-section hidden space-y-8">
             <div class="border-b border-gray-800 pb-6">
-                <h2 class="text-3xl font-extrabold text-white">Seu Carrinho de Aluguel</h2>
-                <p class="text-gray-400 text-sm">Revise seus itens e finalize o pagamento instantâneo via Pix.</p>
+                <h2 class="text-3xl font-extrabold text-white">Seu Carrinho e Endereço do Evento</h2>
+                <p class="text-gray-400 text-sm">Preencha os dados de entrega/montagem e finalize com Pix instantâneo.</p>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <!-- Lista de Itens -->
-                <div class="lg:col-span-2 space-y-4">
+                <!-- Itens e Formulário de Endereço -->
+                <div class="lg:col-span-2 space-y-6">
                     <div id="cart-items-container" class="space-y-4"></div>
+
+                    <!-- Formulário de Endereço e Dados -->
+                    <div class="glass p-6 rounded-2xl space-y-4 border border-gray-800">
+                        <h3 class="text-lg font-bold text-white flex items-center space-x-2">
+                            <i class="fa-solid fa-location-dot text-indigo-400"></i> <span>Dados do Responsável e Local de Montagem</span>
+                        </h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs text-gray-400 mb-1">Nome Completo</label>
+                                <input type="text" id="client-name" placeholder="Ex: Carlos Silva" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-indigo-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-gray-400 mb-1">E-mail</label>
+                                <input type="email" id="client-email" placeholder="carlos@email.com" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-indigo-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-gray-400 mb-1">CPF (Necessário para o Pix)</label>
+                                <input type="text" id="client-cpf" placeholder="000.000.000-00" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-indigo-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-gray-400 mb-1">CEP do Evento</label>
+                                <input type="text" id="event-cep" placeholder="00000-000" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-indigo-500">
+                            </div>
+                            <div class="sm:col-span-2">
+                                <label class="block text-xs text-gray-400 mb-1">Rua / Avenida da Montagem</label>
+                                <input type="text" id="event-street" placeholder="Ex: Av. Paulista" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-indigo-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs text-gray-400 mb-1">Número</label>
+                                <input type="text" id="event-number" placeholder="1000" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-indigo-500">
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Resumo e Pagamento -->
@@ -196,7 +198,7 @@
                         <div class="p-4 bg-white rounded-xl inline-block shadow-inner">
                             <img id="qr-code-image" src="" alt="QR Code Pix" class="w-48 h-48 mx-auto">
                         </div>
-                        <p class="text-xs text-gray-400">Escaneie o QR Code acima com o aplicativo do seu banco para pagar com entrada imediata.</p>
+                        <p class="text-xs text-gray-400">Escaneie o QR Code acima com o aplicativo do seu banco.</p>
                         <div id="payment-success-msg" class="hidden p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-bold text-sm">
                             Obrigado! 😊
                         </div>
@@ -212,11 +214,10 @@
         <p>EventLux Locações Profissionais &bull; Todos os direitos reservados.</p>
     </footer>
 
-    <!-- SCRIPTS DE LÓGICA -->
+    <!-- SCRIPTS -->
     <script>
         const WHATSAPP_NUMBER = "11920065761";
 
-        // DADOS DAS TENDAS (10 fotos em alta resolução)
         const tentsData = [
             { id: 't1', name: 'Tenda Cristal Elegance 5x5', price: 450, image: 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?auto=format&fit=crop&q=80&w=1200' },
             { id: 't2', name: 'Tenda Piramidal Premium 10x10', price: 900, image: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&q=80&w=1200' },
@@ -230,7 +231,6 @@
             { id: 't10', name: 'Tenda Gigante para Convenções', price: 3500, image: 'https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?auto=format&fit=crop&q=80&w=1200' }
         ];
 
-        // DADOS DE SOM (10 fotos em alta resolução)
         const soundData = [
             { id: 's1', name: 'Kit Som Line Array Pro', price: 1200, image: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&q=80&w=1200' },
             { id: 's2', name: 'Subwoofer Ativo 18" Duplo', price: 600, image: 'https://images.unsplash.com/photo-1545128485-c400e7702796?auto=format&fit=crop&q=80&w=1200' },
@@ -248,7 +248,6 @@
         let currentTentsPage = 1;
         let currentSoundPage = 1;
 
-        // CONTROLE DO MENU LATERAL (DASHBOARD)
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('sidebar-overlay');
@@ -270,7 +269,6 @@
             }
         }
 
-        // NAVEGAÇÃO ENTRE PÁGINAS
         function switchPage(pageId) {
             document.querySelectorAll('.page-section').forEach(sec => sec.classList.add('hidden'));
             document.getElementById(`page-${pageId}`).classList.remove('hidden');
@@ -278,7 +276,6 @@
             if(pageId === 'cart') renderCart();
         }
 
-        // RENDERIZAR TENDAS COM PAGINAÇÃO (5 POR PÁGINA)
         function renderTents() {
             const grid = document.getElementById('tents-grid');
             grid.innerHTML = '';
@@ -302,7 +299,6 @@
                     </div>
                 `;
             });
-
             document.getElementById('tents-page-indicator').innerText = `Página ${currentTentsPage} de 2`;
             document.getElementById('tents-btn-text').innerText = currentTentsPage === 1 ? 'Ir para Página 2' : 'Voltar à Página 1';
         }
@@ -313,7 +309,6 @@
             document.getElementById('page-tents').scrollIntoView({ behavior: 'smooth' });
         }
 
-        // RENDERIZAR SOM COM PAGINAÇÃO (5 POR PÁGINA)
         function renderSound() {
             const grid = document.getElementById('sound-grid');
             grid.innerHTML = '';
@@ -337,7 +332,6 @@
                     </div>
                 `;
             });
-
             document.getElementById('sound-page-indicator').innerText = `Página ${currentSoundPage} de 2`;
             document.getElementById('sound-btn-text').innerText = currentSoundPage === 1 ? 'Ir para Página 2' : 'Voltar à Página 1';
         }
@@ -348,7 +342,6 @@
             document.getElementById('page-sound').scrollIntoView({ behavior: 'smooth' });
         }
 
-        // GESTÃO DO CARRINHO
         function addToCart(id, type) {
             let item = type === 'tents' ? tentsData.find(i => i.id === id) : soundData.find(i => i.id === id);
             let existing = cart.find(i => i.id === id);
@@ -359,7 +352,7 @@
                 cart.push({ ...item, quantity: 1 });
             }
             updateBadge();
-            alert(`"${item.name}" adicionado ao carrinho com sucesso!`);
+            alert(`"${item.name}" adicionado ao carrinho!`);
         }
 
         function updateBadge() {
@@ -408,25 +401,30 @@
             renderCart();
         }
 
-        // SUPORTE WHATSAPP AUTOMÁTICO
         function openWhatsAppSupport() {
             const message = encodeURIComponent("Olá! Gostaria de tirar dúvidas sobre o aluguel de tendas e equipamentos de som.");
             window.open(`https://wa.me/55${WHATSAPP_NUMBER}?text=${message}`, '_blank');
         }
 
-        // PAGAMENTO COM MERCADO PAGO E QR CODE PIX CORRIGIDO
         async function checkoutMercadoPago() {
             if (cart.length === 0) {
                 alert("Adicione itens ao carrinho antes de finalizar a compra.");
                 return;
             }
 
-            const totalAmount = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-            
-            if (totalAmount <= 0) {
-                alert("O valor da compra deve ser maior que zero.");
+            const name = document.getElementById('client-name').value.trim();
+            const email = document.getElementById('client-email').value.trim();
+            const cpf = document.getElementById('client-cpf').value.trim();
+            const cep = document.getElementById('event-cep').value.trim();
+            const street = document.getElementById('event-street').value.trim();
+            const number = document.getElementById('event-number').value.trim();
+
+            if (!name || !email || !cpf || !street || !number) {
+                alert("Por favor, preencha todos os campos de dados e endereço de montagem.");
                 return;
             }
+
+            const totalAmount = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
             const btn = document.getElementById('checkout-btn');
             btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Gerando Pix...`;
@@ -435,12 +433,12 @@
             try {
                 const response = await fetch("/api/pagamento", {
                     method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
+                    headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
                         transaction_amount: totalAmount,
-                        description: "Aluguel de Tendas e Som - EventLux"
+                        description: "Aluguel de Tendas e Som - EventLux",
+                        payer: { name, email, cpf },
+                        address: { street, number, cep }
                     })
                 });
 
@@ -450,14 +448,13 @@
                     const qrCodeString = data.point_of_interaction.transaction_data.qr_code;
                     const qrImage = document.getElementById('qr-code-image');
                     
-                    // Gera o QR Code válido utilizando o Pix Copia e Cola oficial do Mercado Pago
                     qrImage.src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(qrCodeString)}`;
 
                     document.getElementById('qr-container').classList.remove('hidden');
                     document.getElementById('payment-success-msg').classList.remove('hidden');
                 } else {
                     console.error("Erro na resposta do Mercado Pago:", data);
-                    alert("Erro ao gerar QR Code Pix. Verifique os dados.");
+                    alert("Erro ao gerar QR Code Pix. Verifique os dados informados.");
                 }
             } catch (error) {
                 console.error("Erro de conexão:", error);
@@ -468,7 +465,6 @@
             }
         }
 
-        // Inicializar telas
         window.onload = function() {
             renderTents();
             renderSound();
