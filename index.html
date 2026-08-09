@@ -6,7 +6,6 @@
     <title>EventLux | Aluguel de Tendas e Sonorização Profissional</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://sdk.mercadopago.com/js/v2"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0b0f19; color: #f3f4f6; }
@@ -27,15 +26,16 @@
             </div>
             
             <div class="flex items-center space-x-4">
-                <div class="relative">
-                    <button onclick="switchPage('cart')" class="relative p-2.5 rounded-xl bg-gray-800/80 hover:bg-gray-700/80 transition text-gray-200 border border-gray-700 flex items-center space-x-2">
-                        <i class="fa-solid fa-cart-shopping"></i>
-                        <span class="text-xs font-semibold">Carrinho</span>
-                        <span id="cart-badge" class="absolute -top-1 -right-1 bg-indigo-600 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold shadow-md">0</span>
-                    </button>
-                    <!-- Notificação vermelha com número 1 ao lado do carrinho -->
-                    <span id="badge-notificacao-msg" class="absolute -top-2 -left-2 bg-red-600 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold shadow-md hidden">1</span>
-                </div>
+                <!-- Botão do Carrinho com o número vermelho em cima do ícone -->
+                <button onclick="switchPage('cart'); limparNotificacaoMsg();" class="relative p-3 rounded-xl bg-gray-800/80 hover:bg-gray-700/80 transition text-gray-200 border border-gray-700 flex items-center space-x-2">
+                    <div class="relative">
+                        <i class="fa-solid fa-cart-shopping text-lg"></i>
+                        <span id="badge-notificacao-msg" class="absolute -top-2 -right-2 bg-red-600 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold shadow-md hidden">1</span>
+                    </div>
+                    <span class="text-xs font-semibold hidden sm:inline">Carrinho</span>
+                    <span id="cart-badge" class="bg-indigo-600 text-white text-xs px-2 py-0.5 rounded-full font-bold shadow-md">0</span>
+                </button>
+
                 <button onclick="toggleSidebar()" class="p-2.5 rounded-xl bg-gray-800/80 hover:bg-gray-700/80 transition text-gray-200 border border-gray-700 focus:outline-none">
                     <i id="hamburger-icon" class="fa-solid fa-bars text-lg"></i>
                 </button>
@@ -55,7 +55,7 @@
                 <a href="#" onclick="switchPage('home'); toggleSidebar();" class="flex items-center space-x-3 p-3 rounded-xl hover:bg-indigo-600/10 hover:text-indigo-400 text-gray-300 transition font-medium"><i class="fa-solid fa-house w-6 text-center"></i><span>Início</span></a>
                 <a href="#" onclick="switchPage('tents'); toggleSidebar();" class="flex items-center space-x-3 p-3 rounded-xl hover:bg-indigo-600/10 hover:text-indigo-400 text-gray-300 transition font-medium"><i class="fa-solid fa-campground w-6 text-center"></i><span>Tendas</span></a>
                 <a href="#" onclick="switchPage('sound'); toggleSidebar();" class="flex items-center space-x-3 p-3 rounded-xl hover:bg-indigo-600/10 hover:text-indigo-400 text-gray-300 transition font-medium"><i class="fa-solid fa-volume-high w-6 text-center"></i><span>Som</span></a>
-                <a href="#" onclick="switchPage('cart'); toggleSidebar();" class="flex items-center space-x-3 p-3 rounded-xl hover:bg-indigo-600/10 hover:text-indigo-400 text-gray-300 transition font-medium"><i class="fa-solid fa-cart-shopping w-6 text-center"></i><span>Carrinho</span></a>
+                <a href="#" onclick="switchPage('cart'); toggleSidebar(); limparNotificacaoMsg();" class="flex items-center space-x-3 p-3 rounded-xl hover:bg-indigo-600/10 hover:text-indigo-400 text-gray-300 transition font-medium"><i class="fa-solid fa-cart-shopping w-6 text-center"></i><span>Carrinho</span></a>
                 <a href="#" onclick="openWhatsAppSupport(); toggleSidebar();" class="flex items-center space-x-3 p-3 rounded-xl hover:bg-emerald-500/10 hover:text-emerald-400 text-gray-300 transition font-medium"><i class="fa-brands fa-whatsapp w-6 text-center text-emerald-400"></i><span>Suporte</span></a>
             </nav>
         </div>
@@ -90,7 +90,7 @@
                 </div>
             </div>
 
-            <!-- SEÇÃO DE AVALIAÇÕES E FOTOS CINEMATOGRÁFICAS -->
+            <!-- SEÇÃO DE AVALIAÇÕES -->
             <div class="space-y-8 pt-4">
                 <div class="text-center space-y-2">
                     <h2 class="text-2xl sm:text-3xl font-extrabold text-white">Aprovado por quem já viveu a experiência</h2>
@@ -107,10 +107,10 @@
                                 </div>
                                 <i class="fa-solid fa-wand-magic-sparkles text-indigo-400 animate-pulse"></i>
                             </div>
-                            <p class="text-gray-300 text-sm italic">"Simplesmente perfeito! As tendas de cristal deixaram o nosso casamento de noite com um visual luxuoso e aconchegante. A montagem foi super rápida e pontual!"</p>
+                            <p class="text-gray-300 text-sm italic">"Simplesmente perfeito! As tendas de cristal deixaram o nosso casamento com um visual luxuoso e aconchegante. A montagem foi super rápida!"</p>
                         </div>
                         <div class="flex items-center space-x-4 pt-4 border-t border-gray-800/80">
-                            <img src="https://images.unsplash.com/photo-1519167758481-83f550bb49b3?auto=format&fit=crop&q=80&w=400" alt="Evento Casamento" class="w-16 h-16 rounded-xl object-cover border border-indigo-500/30">
+                            <img src="https://images.unsplash.com/photo-1519167758481-83f550bb49b3?auto=format&fit=crop&q=80&w=400" alt="Casamento" class="w-16 h-16 rounded-xl object-cover border border-indigo-500/30">
                             <div>
                                 <h4 class="font-bold text-white text-sm">Mariana & Lucas</h4>
                                 <span class="text-xs text-indigo-400">Casamento Luxo</span>
@@ -127,10 +127,10 @@
                                 </div>
                                 <i class="fa-solid fa-wand-magic-sparkles text-violet-400 animate-pulse"></i>
                             </div>
-                            <p class="text-gray-300 text-sm italic">"O som Line Array superou todas as expectativas da nossa convenção corporativa. Áudio cristalino, potente e sem nenhuma falha técnica. Recomendo de olhos fechados!"</p>
+                            <p class="text-gray-300 text-sm italic">"O som Line Array superou todas as expectativas da nossa convenção corporativa. Áudio cristalino, potente e sem falhas. Recomendo muito!"</p>
                         </div>
                         <div class="flex items-center space-x-4 pt-4 border-t border-gray-800/80">
-                            <img src="https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?auto=format&fit=crop&q=80&w=400" alt="Evento Corporativo" class="w-16 h-16 rounded-xl object-cover border border-violet-500/30">
+                            <img src="https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?auto=format&fit=crop&q=80&w=400" alt="Corporativo" class="w-16 h-16 rounded-xl object-cover border border-violet-500/30">
                             <div>
                                 <h4 class="font-bold text-white text-sm">Roberto Siqueira</h4>
                                 <span class="text-xs text-violet-400">Convenção Empresarial</span>
@@ -147,10 +147,10 @@
                                 </div>
                                 <i class="fa-solid fa-wand-magic-sparkles text-indigo-400 animate-pulse"></i>
                             </div>
-                            <p class="text-gray-300 text-sm italic">"Estrutura impecável! Choveu no dia da festa ao ar livre e a tenda piramidal resistiu perfeitamente, mantendo todo mundo seco e o ambiente elegante."</p>
+                            <p class="text-gray-300 text-sm italic">"Estrutura impecável! Choveu no dia da festa ao ar livre e a tenda piramidal resistiu perfeitamente, mantendo todo mundo seco."</p>
                         </div>
                         <div class="flex items-center space-x-4 pt-4 border-t border-gray-800/80">
-                            <img src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&q=80&w=400" alt="Festa ao ar livre" class="w-16 h-16 rounded-xl object-cover border border-indigo-500/30">
+                            <img src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&q=80&w=400" alt="Festa" class="w-16 h-16 rounded-xl object-cover border border-indigo-500/30">
                             <div>
                                 <h4 class="font-bold text-white text-sm">Camila Mendes</h4>
                                 <span class="text-xs text-indigo-400">Aniversário VIP</span>
@@ -269,25 +269,21 @@
                         </select>
                     </div>
 
-                    <!-- CAMPOS DO CARTÃO (Ocultos por padrão) -->
+                    <!-- CAMPOS DIRETOS DE CARTÃO (100% editáveis e funcionais) -->
                     <div id="card-payment-container" class="space-y-3 hidden pt-2">
                         <div>
                             <label class="block text-xs text-gray-400 mb-1">Número do Cartão</label>
-                            <div id="form-checkout__cardNumber" class="w-full bg-gray-900 border border-gray-700 rounded-xl p-2.5 text-white text-sm"></div>
+                            <input type="text" id="card-number" placeholder="4111 2222 3333 4444" maxlength="19" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-indigo-500">
                         </div>
                         <div class="grid grid-cols-2 gap-2">
                             <div>
                                 <label class="block text-xs text-gray-400 mb-1">Validade (MM/AA)</label>
-                                <div id="form-checkout__expirationDate" class="w-full bg-gray-900 border border-gray-700 rounded-xl p-2.5 text-white text-sm"></div>
+                                <input type="text" id="card-expiration" placeholder="12/28" maxlength="5" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-indigo-500">
                             </div>
                             <div>
-                                <label class="block text-xs text-gray-400 mb-1">CVV (Código)</label>
-                                <div id="form-checkout__securityCode" class="w-full bg-gray-900 border border-gray-700 rounded-xl p-2.5 text-white text-sm"></div>
+                                <label class="block text-xs text-gray-400 mb-1">CVV</label>
+                                <input type="password" id="card-cvv" placeholder="123" maxlength="4" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-indigo-500">
                             </div>
-                        </div>
-                        <div>
-                            <label class="block text-xs text-gray-400 mb-1">Parcelas</label>
-                            <select id="form-checkout__installments" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-3 py-2 text-white text-sm"></select>
                         </div>
                     </div>
 
@@ -316,7 +312,7 @@
 
     </main>
 
-    <!-- CAIXA DE MENSAGENS FLUTUANTE EM TEMPO REAL -->
+    <!-- CAIXA DE MENSAGENS FLUTUANTE EM TEMPO REAL COM BOTÃO DE RETORNO -->
     <div id="live-chat-box" class="fixed bottom-6 right-6 z-50 hidden glass p-4 rounded-2xl border border-indigo-500/30 w-80 shadow-2xl space-y-3">
         <div class="flex items-center justify-between border-b border-gray-800 pb-2">
             <span class="text-xs font-bold text-indigo-400 flex items-center space-x-1.5">
@@ -324,9 +320,13 @@
             </span>
             <button onclick="document.getElementById('live-chat-box').classList.add('hidden')" class="text-gray-400 hover:text-white text-xs"><i class="fa-solid fa-xmark"></i></button>
         </div>
-        <div id="live-chat-content" class="text-xs text-gray-200 space-y-2 max-h-32 overflow-y-auto">
+        <div id="live-chat-content" class="text-xs text-gray-200 space-y-2 max-h-40 overflow-y-auto">
             Nenhuma nova mensagem.
         </div>
+        <!-- Botão de retorno direto ao pagamento -->
+        <button id="btn-voltar-pagamento" onclick="voltarParaPagamento()" class="w-full py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs rounded-xl transition shadow-md hidden">
+            <i class="fa-solid fa-arrow-rotate-left mr-1"></i> Retornar ao Pagamento
+        </button>
     </div>
 
     <!-- FOOTER -->
@@ -340,33 +340,6 @@
         let codigoPixCopiaECola = "";
         let meuUltimoPaymentId = localStorage.getItem('meuUltimoPaymentId') || null;
 
-        // Inicializa o Mercado Pago SDK com sua chave pública
-        const mp = new MercadoPago('APP_USR-39a79bb3-9387-4389-9e07-6bcf4ffc73cb');
-        let cardForm = null;
-
-        function inicializarMercadoPagoCard() {
-            if (cardForm) return;
-            try {
-                cardForm = mp.cardForm({
-                    amount: "100.0",
-                    iframe: true,
-                    form: {
-                        id: "form-checkout",
-                        cardNumber: { id: "form-checkout__cardNumber", placeholder: "Número do cartão" },
-                        expirationDate: { id: "form-checkout__expirationDate", placeholder: "MM/AA" },
-                        securityCode: { id: "form-checkout__securityCode", placeholder: "CVV" },
-                        installments: { id: "form-checkout__installments" }
-                    },
-                    callbacks: {
-                        onFormMounted: error => { if (error) console.warn("Erro ao montar form de cartão:", error); },
-                        onSubmit: event => { event.preventDefault(); }
-                    }
-                });
-            } catch (e) {
-                console.error("Erro cardForm:", e);
-            }
-        }
-
         function mudarMetodoPagamento() {
             const metodo = document.getElementById('payment-method-select').value;
             const containerCard = document.getElementById('card-payment-container');
@@ -375,7 +348,6 @@
             if (metodo === 'credit_card') {
                 containerCard.classList.remove('hidden');
                 qrContainer.classList.add('hidden');
-                inicializarMercadoPagoCard();
             } else {
                 containerCard.classList.add('hidden');
             }
@@ -617,17 +589,25 @@
                 address: { street, number, cep }
             };
 
-            if (metodoPagamento === 'credit_card' && cardForm) {
-                try {
-                    const cardToken = await cardForm.createCardToken();
-                    dadosEnvio.token = cardToken.token;
-                    dadosEnvio.installments = document.getElementById('form-checkout__installments').value;
-                } catch (e) {
-                    alert("Erro ao processar dados do cartão. Verifique as informações.");
+            if (metodoPagamento === 'credit_card') {
+                const cardNumber = document.getElementById('card-number').value.replace(/\s+/g, '');
+                const cardExpiration = document.getElementById('card-expiration').value.split('/');
+                const cardCvv = document.getElementById('card-cvv').value;
+
+                if (!cardNumber || cardExpiration.length < 2 || !cardCvv) {
+                    alert("Preencha corretamente os dados do cartão.");
                     btn.innerHTML = `<i class="fa-solid fa-lock"></i> <span>Finalizar Pagamento</span>`;
                     btn.disabled = false;
                     return;
                 }
+
+                dadosEnvio.cardData = {
+                    number: cardNumber,
+                    expiration_month: cardExpiration[0],
+                    expiration_year: "20" + cardExpiration[1],
+                    security_code: cardCvv,
+                    cardholder: { name: name }
+                };
             }
 
             try {
@@ -646,12 +626,12 @@
                     
                     meuUltimoPaymentId = data.id;
                     localStorage.setItem('meuUltimoPaymentId', meuUltimoPaymentId);
-                } else if (metodoPagamento === 'credit_card' && data.status === 'approved') {
-                    alert("Pagamento com cartão aprovado com sucesso!");
+                } else if (data.status === 'approved') {
+                    alert("Pagamento aprovado com sucesso!");
                     meuUltimoPaymentId = data.id;
                     localStorage.setItem('meuUltimoPaymentId', meuUltimoPaymentId);
                 } else {
-                    alert("Pedido gerado / processado com sucesso!");
+                    alert("Pedido gerado com sucesso!");
                     meuUltimoPaymentId = data.id || Date.now();
                     localStorage.setItem('meuUltimoPaymentId', meuUltimoPaymentId);
                 }
@@ -675,14 +655,32 @@
                     const chatBox = document.getElementById('live-chat-box');
                     const chatContent = document.getElementById('live-chat-content');
                     const badgeMsg = document.getElementById('badge-notificacao-msg');
+                    const btnVoltar = document.getElementById('btn-voltar-pagamento');
 
-                    chatContent.innerHTML = `<p class="bg-indigo-600/20 p-2.5 rounded-xl border border-indigo-500/30">${meuPedido.mensagemAgradecimento}</p>`;
+                    chatContent.innerHTML = `<p class="bg-indigo-600/20 p-2.5 rounded-xl border border-indigo-500/30 text-center">${meuPedido.mensagemAgradecimento}</p>`;
+                    
+                    // Exibe o botão de retorno se a mensagem for de pendência/aviso
+                    btnVoltar.classList.remove('hidden');
+
                     chatBox.classList.remove('hidden');
                     badgeMsg.classList.remove('hidden');
                 }
             } catch (e) {
                 console.error("Erro ao buscar mensagens:", e);
             }
+        }
+
+        function voltarParaPagamento() {
+            switchPage('cart');
+            document.getElementById('live-chat-box').classList.add('hidden');
+            const qrContainer = document.getElementById('qr-container');
+            if (qrContainer) {
+                qrContainer.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        function limparNotificacaoMsg() {
+            document.getElementById('badge-notificacao-msg').classList.add('hidden');
         }
 
         setInterval(verificarMensagensCliente, 3000);
