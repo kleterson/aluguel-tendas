@@ -52,12 +52,12 @@
         </div>
     </div>
 
-    <!-- Modal para enviar agendamento e agradecimento -->
+    <!-- Modal para enviar aviso -->
     <div id="modal-agendar" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
         <div class="glass w-full max-w-md p-6 rounded-2xl border border-gray-800 space-y-4">
-            <h3 class="text-lg font-bold text-white flex items-center space-x-2">
+            <h3 id="modal-titulo" class="text-lg font-bold text-white flex items-center space-x-2">
                 <i class="fa-solid fa-calendar-check text-indigo-400"></i>
-                <span>Definir Entrega e Agradecimento</span>
+                <span>Enviar Aviso de Pagamento Pendente</span>
             </h3>
             <input type="hidden" id="modal-pedido-id">
             <div class="space-y-1">
@@ -65,8 +65,8 @@
                 <input type="text" id="modal-data-horario" placeholder="Ex: 15/08/2026 às 14:00" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-indigo-500">
             </div>
             <div class="space-y-1">
-                <label class="text-xs text-gray-400 font-semibold">Mensagem de Agradecimento:</label>
-                <textarea id="modal-mensagem" rows="3" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-indigo-500">Falta pouco para concluir o pagamento! 😊 Muito obrigado pela preferência, seus equipamentos serão enviados na data combinada. Qualquer dúvida estamos à disposição!</textarea>
+                <label class="text-xs text-gray-400 font-semibold">Mensagem para o Cliente:</label>
+                <textarea id="modal-mensagem" rows="3" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-indigo-500"></textarea>
             </div>
             <div class="flex space-x-3 pt-2">
                 <button onclick="fecharModal()" class="flex-1 px-4 py-2.5 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-300 font-semibold text-sm transition">Cancelar</button>
@@ -92,9 +92,20 @@
                 tbody.innerHTML = '';
                 pedidos.reverse().forEach(p => {
                     let statusHtml = '';
-                    if (p.statusAdmin === 'visualizado') {
+                    let statusDoPedido = p.statusAdmin || 'pendente_pagamento';
+
+                    if (statusDoPedido === 'aprovado') {
                         statusHtml = `
-                            <div class="text-xs text-emerald-400 font-bold mb-1"><i class="fa-solid fa-check-double"></i> Enviado ao Cliente</div>
+                            <div class="mb-2">
+                                <span class="px-2 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Pagamento Concluído</span>
+                            </div>
+                            <button onclick="abrirModal(${p.id}, 'aprovado')" class="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs transition flex items-center space-x-1.5 whitespace-nowrap">
+                                <i class="fa-solid fa-paper-plane"></i> <span>Enviar Agradecimento</span>
+                            </button>
+                        `;
+                    } else if (statusDoPedido === 'visualizado') {
+                        statusHtml = `
+                            <div class="text-xs text-emerald-400 font-bold mb-1"><i class="fa-solid fa-check-double"></i> Aviso Enviado</div>
                             <div class="text-xs text-gray-300"><b>Entrega:</b> ${p.dataHorarioEnvio}</div>
                         `;
                     } else {
@@ -102,7 +113,7 @@
                             <div class="mb-2">
                                 <span class="px-2 py-1 rounded-full text-xs font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20">Pagamento Pendente</span>
                             </div>
-                            <button onclick="abrirModal(${p.id})" class="px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs transition flex items-center space-x-1.5 whitespace-nowrap">
+                            <button onclick="abrirModal(${p.id}, 'pendente')" class="px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs transition flex items-center space-x-1.5 whitespace-nowrap">
                                 <i class="fa-solid fa-paper-plane"></i> <span>Enviar Aviso</span>
                             </button>
                         `;
@@ -134,8 +145,19 @@
             }
         }
 
-        function abrirModal(id) {
+        function abrirModal(id, tipo) {
             document.getElementById('modal-pedido-id').value = id;
+            const campoMensagem = document.getElementById('modal-mensagem');
+            const tituloModal = document.getElementById('modal-titulo');
+
+            if (tipo === 'aprovado') {
+                tituloModal.innerHTML = `<i class="fa-solid fa-calendar-check text-emerald-400"></i><span>Enviar Mensagem de Agradecimento</span>`;
+                campoMensagem.value = "Muito obrigado pela preferência, pagamento confirmado com sucesso! Seus equipamentos serão enviados na data combinada. Qualquer dúvida estamos à disposição!";
+            } else {
+                tituloModal.innerHTML = `<i class="fa-solid fa-calendar-check text-indigo-400"></i><span>Enviar Aviso de Pagamento Pendente</span>`;
+                campoMensagem.value = "Falta pouco para concluir o pagamento! 😊";
+            }
+
             document.getElementById('modal-agendar').classList.remove('hidden');
             document.getElementById('modal-agendar').classList.add('flex');
         }
