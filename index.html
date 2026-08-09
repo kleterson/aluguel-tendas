@@ -221,31 +221,32 @@
         const WHATSAPP_NUMBER = "11920065761";
 
         // DADOS DAS TENDAS (10 fotos em alta resolução 8K/4K simuladas)
+        // DADOS DAS TENDAS COM LINKS ATUALIZADOS
         const tentsData = [
-            { id: 't1', name: 'Tenda Cristal Elegance 5x5', price: 450, image: 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?auto=format&fit=crop&q=80&w=1200' },
-            { id: 't2', name: 'Tenda Piramidal Premium 10x10', price: 900, image: 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&q=80&w=1200' },
-            { id: 't3', name: 'Tenda Tensionada Master', price: 1500, image: 'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?auto=format&fit=crop&q=80&w=1200' },
-            { id: 't4', name: 'Tenda Hexagonal VIP', price: 1200, image: 'https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&q=80&w=1200' },
-            { id: 't5', name: 'Tenda Gazebo Luxo Branca', price: 300, image: 'https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?auto=format&fit=crop&q=80&w=1200' },
-            { id: 't6', name: 'Tenda Estruturada Blackout', price: 1100, image: 'https://images.unsplash.com/photo-1505236858219-8359eb29e329?auto=format&fit=crop&q=80&w=1200' },
-            { id: 't7', name: 'Tenda Cúpula Geodésica', price: 2200, image: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&q=80&w=1200' },
-            { id: 't8', name: 'Tenda Sanfonada Portátil', price: 250, image: 'https://images.unsplash.com/photo-1478147427182-58a8039da2e5?auto=format&fit=crop&q=80&w=1200' },
-            { id: 't9', name: 'Tenda Estreita de Passarela', price: 400, image: 'https://images.unsplash.com/photo-1527529482837-4698179dc6ce?auto=format&fit=crop&q=80&w=1200' },
-            { id: 't10', name: 'Tenda Gigante para Convenções', price: 3500, image: 'https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?auto=format&fit=crop&q=80&w=1200' }
+            { id: 't1', name: 'Tenda Cristal Elegance 5x5', price: 450, image: 'https://picsum.photos/seed/tent1/800/600' },
+            { id: 't2', name: 'Tenda Piramidal Premium 10x10', price: 900, image: 'https://picsum.photos/seed/tent2/800/600' },
+            { id: 't3', name: 'Tenda Tensionada Master', price: 1500, image: 'https://picsum.photos/seed/tent3/800/600' },
+            { id: 't4', name: 'Tenda Hexagonal VIP', price: 1200, image: 'https://picsum.photos/seed/tent4/800/600' },
+            { id: 't5', name: 'Tenda Gazebo Luxo Branca', price: 300, image: 'https://picsum.photos/seed/tent5/800/600' },
+            { id: 't6', name: 'Tenda Estruturada Blackout', price: 1100, image: 'https://picsum.photos/seed/tent6/800/600' },
+            { id: 't7', name: 'Tenda Cúpula Geodésica', price: 2200, image: 'https://picsum.photos/seed/tent7/800/600' },
+            { id: 't8', name: 'Tenda Sanfonada Portátil', price: 250, image: 'https://picsum.photos/seed/tent8/800/600' },
+            { id: 't9', name: 'Tenda Estreita de Passarela', price: 400, image: 'https://picsum.photos/seed/tent9/800/600' },
+            { id: 't10', name: 'Tenda Gigante para Convenções', price: 3500, image: 'https://picsum.photos/seed/tent10/800/600' }
         ];
 
-        // DADOS DE SOM (10 fotos em alta resolução 8K/4K simuladas)
+        // DADOS DE SOM COM LINKS ATUALIZADOS
         const soundData = [
-            { id: 's1', name: 'Kit Som Line Array Pro', price: 1200, image: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&q=80&w=1200' },
-            { id: 's2', name: 'Subwoofer Ativo 18" Duplo', price: 600, image: 'https://images.unsplash.com/photo-1545128485-c400e7702796?auto=format&fit=crop&q=80&w=1200' },
-            { id: 's3', name: 'Mesa de Som Digital 16 Canais', price: 500, image: 'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?auto=format&fit=crop&q=80&w=1200' },
-            { id: 's4', name: 'Kit Microfones Sem Fio UHF', price: 350, image: 'https://images.unsplash.com/photo-1583795128727-6ec364240f8b?auto=format&fit=crop&q=80&w=1200' },
-            { id: 's5', name: 'Torre Acústica Coluna Ativa', price: 700, image: 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&q=80&w=1200' },
-            { id: 's6', name: 'Caixa de Som Ativa 15" Retorno', price: 300, image: 'https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?auto=format&fit=crop&q=80&w=1200' },
-            { id: 's7', name: 'Kit DJ Completo (CDJs + Mixer)', price: 1500, image: 'https://images.unsplash.com/photo-1571266028243-3716f02d2d2e?auto=format&fit=crop&q=80&w=1200' },
-            { id: 's8', name: 'Reforço de Graves Estádio', price: 900, image: 'https://images.unsplash.com/photo-1520523839896-5014605e55e0?auto=format&fit=crop&q=80&w=1200' },
-            { id: 's9', name: 'Microfone Condensador Estúdio', price: 250, image: 'https://images.unsplash.com/photo-1590602847861-f357a9332bbc?auto=format&fit=crop&q=80&w=1200' },
-            { id: 's10', name: 'Sistema de Som Corporativo', price: 800, image: 'https://images.unsplash.com/photo-1465847899084-d164df4dedc6?auto=format&fit=crop&q=80&w=1200' }
+            { id: 's1', name: 'Kit Som Line Array Pro', price: 1200, image: 'https://picsum.photos/seed/sound1/800/600' },
+            { id: 's2', name: 'Subwoofer Ativo 18" Duplo', price: 600, image: 'https://picsum.photos/seed/sound2/800/600' },
+            { id: 's3', name: 'Mesa de Som Digital 16 Canais', price: 500, image: 'https://picsum.photos/seed/sound3/800/600' },
+            { id: 's4', name: 'Kit Microfones Sem Fio UHF', price: 350, image: 'https://picsum.photos/seed/sound4/800/600' },
+            { id: 's5', name: 'Torre Acústica Coluna Ativa', price: 700, image: 'https://picsum.photos/seed/sound5/800/600' },
+            { id: 's6', name: 'Caixa de Som Ativa 15" Retorno', price: 300, image: 'https://picsum.photos/seed/sound6/800/600' },
+            { id: 's7', name: 'Kit DJ Completo (CDJs + Mixer)', price: 1500, image: 'https://picsum.photos/seed/sound7/800/600' },
+            { id: 's8', name: 'Reforço de Graves Estádio', price: 900, image: 'https://picsum.photos/seed/sound8/800/600' },
+            { id: 's9', name: 'Microfone Condensador Estúdio', price: 250, image: 'https://picsum.photos/seed/sound9/800/600' },
+            { id: 's10', name: 'Sistema de Som Corporativo', price: 800, image: 'https://picsum.photos/seed/sound10/800/600' }
         ];
 
         let cart = [];
