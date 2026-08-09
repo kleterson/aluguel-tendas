@@ -15,7 +15,6 @@
 <body class="min-h-screen p-4 sm:p-8">
 
     <div class="max-w-7xl mx-auto space-y-8">
-        <!-- Header -->
         <div class="flex items-center justify-between glass p-6 rounded-2xl border border-gray-800">
             <div class="flex items-center space-x-3">
                 <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center shadow-lg shadow-indigo-500/30">
@@ -28,7 +27,6 @@
             </button>
         </div>
 
-        <!-- Tabela de Pedidos -->
         <div class="glass rounded-2xl overflow-hidden border border-gray-800">
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse">
@@ -52,15 +50,15 @@
         </div>
     </div>
 
-    <!-- Modal para enviar aviso -->
     <div id="modal-agendar" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
         <div class="glass w-full max-w-md p-6 rounded-2xl border border-gray-800 space-y-4">
             <h3 id="modal-titulo" class="text-lg font-bold text-white flex items-center space-x-2">
                 <i class="fa-solid fa-calendar-check text-indigo-400"></i>
-                <span>Enviar Aviso de Pagamento Pendente</span>
+                <span>Enviar Mensagem</span>
             </h3>
             <input type="hidden" id="modal-pedido-id">
-            <div class="space-y-1">
+            <input type="hidden" id="modal-tipo-envio">
+            <div id="grupo-data-horario" class="space-y-1">
                 <label class="text-xs text-gray-400 font-semibold">Dia e Horário da Entrega:</label>
                 <input type="text" id="modal-data-horario" placeholder="Ex: 15/08/2026 às 14:00" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-indigo-500">
             </div>
@@ -106,7 +104,6 @@
                     } else if (statusDoPedido === 'visualizado') {
                         statusHtml = `
                             <div class="text-xs text-emerald-400 font-bold mb-1"><i class="fa-solid fa-check-double"></i> Aviso Enviado</div>
-                            <div class="text-xs text-gray-300"><b>Entrega:</b> ${p.dataHorarioEnvio}</div>
                         `;
                     } else {
                         statusHtml = `
@@ -147,15 +144,19 @@
 
         function abrirModal(id, tipo) {
             document.getElementById('modal-pedido-id').value = id;
+            document.getElementById('modal-tipo-envio').value = tipo;
             const campoMensagem = document.getElementById('modal-mensagem');
             const tituloModal = document.getElementById('modal-titulo');
+            const grupoDataHorario = document.getElementById('grupo-data-horario');
 
             if (tipo === 'aprovado') {
                 tituloModal.innerHTML = `<i class="fa-solid fa-calendar-check text-emerald-400"></i><span>Enviar Mensagem de Agradecimento</span>`;
                 campoMensagem.value = "Muito obrigado pela preferência, pagamento confirmado com sucesso! Seus equipamentos serão enviados na data combinada. Qualquer dúvida estamos à disposição!";
+                grupoDataHorario.style.display = 'block';
             } else {
-                tituloModal.innerHTML = `<i class="fa-solid fa-calendar-check text-indigo-400"></i><span>Enviar Aviso de Pagamento Pendente</span>`;
+                tituloModal.innerHTML = `<i class="fa-solid fa-bell text-indigo-400"></i><span>Enviar Aviso de Pagamento Pendente</span>`;
                 campoMensagem.value = "Falta pouco para concluir o pagamento! 😊";
+                grupoDataHorario.style.display = 'none';
             }
 
             document.getElementById('modal-agendar').classList.remove('hidden');
@@ -169,10 +170,11 @@
 
         async function enviarAgendamento() {
             const id = document.getElementById('modal-pedido-id').value;
+            const tipo = document.getElementById('modal-tipo-envio').value;
             const dataHorarioEnvio = document.getElementById('modal-data-horario').value;
             const mensagemAgradecimento = document.getElementById('modal-mensagem').value;
 
-            if (!dataHorarioEnvio) {
+            if (tipo === 'aprovado' && !dataHorarioEnvio) {
                 alert('Por favor, preencha o dia e horário da entrega.');
                 return;
             }
@@ -181,7 +183,7 @@
                 const response = await fetch(`/api/pedidos/${id}/atualizar`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ dataHorarioEnvio, mensagemAgradecimento })
+                    body: JSON.stringify({ dataHorarioEnvio: tipo === 'aprovado' ? dataHorarioEnvio : '', mensagemAgradecimento, tipoEnvio: tipo })
                 });
 
                 if (response.ok) {

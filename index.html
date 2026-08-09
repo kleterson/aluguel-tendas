@@ -6,6 +6,7 @@
     <title>EventLux | Aluguel de Tendas e Sonorização Profissional</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://sdk.mercadopago.com/js/v2"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #0b0f19; color: #f3f4f6; }
@@ -26,10 +27,15 @@
             </div>
             
             <div class="flex items-center space-x-4">
-                <button onclick="switchPage('cart')" class="relative p-2.5 rounded-xl bg-gray-800/80 hover:bg-gray-700/80 transition text-gray-200 border border-gray-700">
-                    <i class="fa-solid fa-cart-shopping"></i>
-                    <span id="cart-badge" class="absolute -top-1 -right-1 bg-indigo-600 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold shadow-md">0</span>
-                </button>
+                <div class="relative">
+                    <button onclick="switchPage('cart')" class="relative p-2.5 rounded-xl bg-gray-800/80 hover:bg-gray-700/80 transition text-gray-200 border border-gray-700 flex items-center space-x-2">
+                        <i class="fa-solid fa-cart-shopping"></i>
+                        <span class="text-xs font-semibold">Carrinho</span>
+                        <span id="cart-badge" class="absolute -top-1 -right-1 bg-indigo-600 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold shadow-md">0</span>
+                    </button>
+                    <!-- Notificação vermelha com número 1 ao lado do carrinho -->
+                    <span id="badge-notificacao-msg" class="absolute -top-2 -left-2 bg-red-600 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold shadow-md hidden">1</span>
+                </div>
                 <button onclick="toggleSidebar()" class="p-2.5 rounded-xl bg-gray-800/80 hover:bg-gray-700/80 transition text-gray-200 border border-gray-700 focus:outline-none">
                     <i id="hamburger-icon" class="fa-solid fa-bars text-lg"></i>
                 </button>
@@ -92,7 +98,6 @@
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    
                     <div class="glass p-6 rounded-2xl border border-gray-800 flex flex-col justify-between space-y-4">
                         <div class="space-y-3">
                             <div class="flex items-center justify-between">
@@ -152,7 +157,6 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
         </section>
@@ -199,7 +203,7 @@
         <section id="page-cart" class="page-section hidden space-y-8">
             <div class="border-b border-gray-800 pb-6">
                 <h2 class="text-3xl font-extrabold text-white">Seu Carrinho e Endereço do Evento</h2>
-                <p class="text-gray-400 text-sm">Preencha o CEP para o preenchimento automático do endereço e finalize via Pix instantâneo.</p>
+                <p class="text-gray-400 text-sm">Preencha o CEP para o preenchimento automático do endereço e escolha a forma de pagamento.</p>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -220,7 +224,7 @@
                                 <input type="email" id="client-email" placeholder="carlos@email.com" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-indigo-500">
                             </div>
                             <div>
-                                <label class="block text-xs text-gray-400 mb-1">CPF (Necessário para o Pix)</label>
+                                <label class="block text-xs text-gray-400 mb-1">CPF</label>
                                 <input type="text" id="client-cpf" placeholder="000.000.000-00" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-indigo-500">
                             </div>
                             <div>
@@ -256,23 +260,50 @@
                         </div>
                     </div>
 
+                    <!-- ESCOLHA DA FORMA DE PAGAMENTO -->
+                    <div class="space-y-2 pt-2">
+                        <label class="block text-xs text-gray-400 font-semibold">Forma de Pagamento:</label>
+                        <select id="payment-method-select" onchange="mudarMetodoPagamento()" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-indigo-500">
+                            <option value="pix">Pix (QR Code Instantâneo)</option>
+                            <option value="credit_card">Cartão de Crédito / Débito</option>
+                        </select>
+                    </div>
+
+                    <!-- CAMPOS DO CARTÃO (Ocultos por padrão) -->
+                    <div id="card-payment-container" class="space-y-3 hidden pt-2">
+                        <div>
+                            <label class="block text-xs text-gray-400 mb-1">Número do Cartão</label>
+                            <div id="form-checkout__cardNumber" class="w-full bg-gray-900 border border-gray-700 rounded-xl p-2.5 text-white text-sm"></div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div>
+                                <label class="block text-xs text-gray-400 mb-1">Validade (MM/AA)</label>
+                                <div id="form-checkout__expirationDate" class="w-full bg-gray-900 border border-gray-700 rounded-xl p-2.5 text-white text-sm"></div>
+                            </div>
+                            <div>
+                                <label class="block text-xs text-gray-400 mb-1">CVV (Código)</label>
+                                <div id="form-checkout__securityCode" class="w-full bg-gray-900 border border-gray-700 rounded-xl p-2.5 text-white text-sm"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs text-gray-400 mb-1">Parcelas</label>
+                            <select id="form-checkout__installments" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-3 py-2 text-white text-sm"></select>
+                        </div>
+                    </div>
+
                     <div class="space-y-3 pt-4">
-                        <button onclick="checkoutMercadoPago()" id="checkout-btn" class="w-full py-3.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold shadow-lg shadow-indigo-600/30 transition flex items-center justify-center space-x-2">
-                            <i class="fa-solid fa-qrcode"></i> <span>Gerar QR Code Pix</span>
+                        <button onclick="processarPagamento()" id="checkout-btn" class="w-full py-3.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold shadow-lg shadow-indigo-600/30 transition flex items-center justify-center space-x-2">
+                            <i class="fa-solid fa-lock"></i> <span>Finalizar Pagamento</span>
                         </button>
                     </div>
 
+                    <!-- CONTAINER DO QR CODE PIX -->
                     <div id="qr-container" class="hidden text-center space-y-4 pt-4 border-t border-gray-800">
                         <div class="p-4 bg-white rounded-xl inline-block shadow-inner">
                             <img id="qr-code-image" src="" alt="QR Code Pix" class="w-48 h-48 mx-auto">
                         </div>
-                        <p class="text-xs text-gray-400">Escaneie o QR Code acima com o aplicativo do seu banco.</p>
-                        
-                        <div id="payment-success-msg" class="hidden p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-bold text-sm">
-                            Aguardando Pagamento....
-                        </div>
-
-                        <div id="area-pix" style="text-align: center; margin-top: 15px;">
+                        <p class="text-xs text-gray-400">Escaneie o QR Code ou copie o código abaixo:</p>
+                        <div id="area-pix" style="text-align: center; margin-top: 10px;">
                             <p id="copia-cola-texto" style="word-break: break-all; font-size: 11px; color: #888; margin: 10px 0; max-height: 50px; overflow-y: auto; background: #0b0f19; padding: 6px; border-radius: 6px; border: 1px solid #374151;"></p>
                             <button id="btn-copiar" onclick="copiarPix()" style="background-color: #4F46E5; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; font-size: 14px;">
                                 📋 Copiar Código Pix
@@ -285,6 +316,19 @@
 
     </main>
 
+    <!-- CAIXA DE MENSAGENS FLUTUANTE EM TEMPO REAL -->
+    <div id="live-chat-box" class="fixed bottom-6 right-6 z-50 hidden glass p-4 rounded-2xl border border-indigo-500/30 w-80 shadow-2xl space-y-3">
+        <div class="flex items-center justify-between border-b border-gray-800 pb-2">
+            <span class="text-xs font-bold text-indigo-400 flex items-center space-x-1.5">
+                <i class="fa-solid fa-headset"></i> <span>Mensagens da EventLux</span>
+            </span>
+            <button onclick="document.getElementById('live-chat-box').classList.add('hidden')" class="text-gray-400 hover:text-white text-xs"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div id="live-chat-content" class="text-xs text-gray-200 space-y-2 max-h-32 overflow-y-auto">
+            Nenhuma nova mensagem.
+        </div>
+    </div>
+
     <!-- FOOTER -->
     <footer class="glass border-t border-gray-800/50 py-8 mt-auto text-center text-xs text-gray-500">
         <p>EventLux Locações Profissionais &bull; Todos os direitos reservados.</p>
@@ -294,6 +338,48 @@
     <script>
         const WHATSAPP_NUMBER = "11920065761";
         let codigoPixCopiaECola = "";
+        let meuUltimoPaymentId = localStorage.getItem('meuUltimoPaymentId') || null;
+
+        // Inicializa o Mercado Pago SDK com sua chave pública
+        const mp = new MercadoPago('APP_USR-39a79bb3-9387-4389-9e07-6bcf4ffc73cb');
+        let cardForm = null;
+
+        function inicializarMercadoPagoCard() {
+            if (cardForm) return;
+            try {
+                cardForm = mp.cardForm({
+                    amount: "100.0",
+                    iframe: true,
+                    form: {
+                        id: "form-checkout",
+                        cardNumber: { id: "form-checkout__cardNumber", placeholder: "Número do cartão" },
+                        expirationDate: { id: "form-checkout__expirationDate", placeholder: "MM/AA" },
+                        securityCode: { id: "form-checkout__securityCode", placeholder: "CVV" },
+                        installments: { id: "form-checkout__installments" }
+                    },
+                    callbacks: {
+                        onFormMounted: error => { if (error) console.warn("Erro ao montar form de cartão:", error); },
+                        onSubmit: event => { event.preventDefault(); }
+                    }
+                });
+            } catch (e) {
+                console.error("Erro cardForm:", e);
+            }
+        }
+
+        function mudarMetodoPagamento() {
+            const metodo = document.getElementById('payment-method-select').value;
+            const containerCard = document.getElementById('card-payment-container');
+            const qrContainer = document.getElementById('qr-container');
+
+            if (metodo === 'credit_card') {
+                containerCard.classList.remove('hidden');
+                qrContainer.classList.add('hidden');
+                inicializarMercadoPagoCard();
+            } else {
+                containerCard.classList.add('hidden');
+            }
+        }
 
         const tentsData = [
             { id: 't1', name: 'Tenda Cristal Elegance 5x5', price: 450, image: 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?auto=format&fit=crop&q=80&w=1200' },
@@ -329,7 +415,6 @@
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('sidebar-overlay');
             const icon = document.getElementById('hamburger-icon');
-            
             const isOpen = sidebar.classList.contains('translate-x-full');
             if (isOpen) {
                 sidebar.classList.remove('translate-x-full');
@@ -357,8 +442,7 @@
             const grid = document.getElementById('tents-grid');
             grid.innerHTML = '';
             const start = (currentTentsPage - 1) * 5;
-            const end = start + 5;
-            const items = tentsData.slice(start, end);
+            const items = tentsData.slice(start, start + 5);
 
             items.forEach(item => {
                 grid.innerHTML += `
@@ -390,8 +474,7 @@
             const grid = document.getElementById('sound-grid');
             grid.innerHTML = '';
             const start = (currentSoundPage - 1) * 5;
-            const end = start + 5;
-            const items = soundData.slice(start, end);
+            const items = soundData.slice(start, start + 5);
 
             items.forEach(item => {
                 grid.innerHTML += `
@@ -422,12 +505,7 @@
         function addToCart(id, type) {
             let item = type === 'tents' ? tentsData.find(i => i.id === id) : soundData.find(i => i.id === id);
             let existing = cart.find(i => i.id === id);
-            
-            if (existing) {
-                existing.quantity += 1;
-            } else {
-                cart.push({ ...item, quantity: 1 });
-            }
+            if (existing) { existing.quantity += 1; } else { cart.push({ ...item, quantity: 1 }); }
             updateBadge();
             alert(`"${item.name}" adicionado ao carrinho!`);
         }
@@ -440,14 +518,12 @@
         function renderCart() {
             const container = document.getElementById('cart-items-container');
             container.innerHTML = '';
-
             if (cart.length === 0) {
                 container.innerHTML = `<div class="glass p-8 rounded-2xl text-center text-gray-400">Seu carrinho está vazio. Adicione tendas ou equipamentos de som.</div>`;
                 document.getElementById('cart-subtotal').innerText = 'R$ 0,00';
                 document.getElementById('cart-total').innerText = 'R$ 0,00';
                 return;
             }
-
             let subtotal = 0;
             cart.forEach((item, index) => {
                 subtotal += item.price * item.quantity;
@@ -467,7 +543,6 @@
                     </div>
                 `;
             });
-
             document.getElementById('cart-subtotal').innerText = `R$ ${subtotal.toFixed(2)}`;
             document.getElementById('cart-total').innerText = `R$ ${subtotal.toFixed(2)}`;
         }
@@ -486,20 +561,16 @@
         async function buscarCep(cep) {
             const cepLimpo = cep.replace(/\D/g, '');
             if (cepLimpo.length !== 8) return;
-
             try {
                 const response = await fetch(`https://viacep.com.br/ws/${cepLimpo}/json/`);
                 const data = await response.json();
-
                 if (!data.erro) {
                     document.getElementById('event-street').value = `${data.logradouro}, ${data.bairro} - ${data.localidade}/${data.uf}`;
                     document.getElementById('event-number').focus();
                 } else {
-                    alert("CEP não encontrado. Verifique o número digitado.");
+                    alert("CEP não encontrado.");
                 }
-            } catch (error) {
-                console.error("Erro ao buscar CEP:", error);
-            }
+            } catch (error) { console.error("Erro ao buscar CEP:", error); }
         }
 
         function copiarPix() {
@@ -508,28 +579,25 @@
                 const btn = document.getElementById('btn-copiar');
                 btn.innerText = "Copiado com sucesso! ✅";
                 btn.style.backgroundColor = "#10B981";
-                
                 setTimeout(() => {
                     btn.innerText = "📋 Copiar Código Pix";
                     btn.style.backgroundColor = "#4F46E5";
                 }, 3000);
-            }).catch(err => {
-                alert("Erro ao tentar copiar o código.");
             });
         }
 
-        async function checkoutMercadoPago() {
+        async function processarPagamento() {
             if (cart.length === 0) {
                 alert("Adicione itens ao carrinho antes de finalizar a compra.");
                 return;
             }
-
             const name = document.getElementById('client-name').value.trim();
             const email = document.getElementById('client-email').value.trim();
             const cpf = document.getElementById('client-cpf').value.trim();
             const cep = document.getElementById('event-cep').value.trim();
             const street = document.getElementById('event-street').value.trim();
             const number = document.getElementById('event-number').value.trim();
+            const metodoPagamento = document.getElementById('payment-method-select').value;
 
             if (!name || !email || !cpf || !street || !number) {
                 alert("Por favor, preencha todos os campos de dados e endereço de montagem.");
@@ -537,46 +605,87 @@
             }
 
             const totalAmount = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-
             const btn = document.getElementById('checkout-btn');
-            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Gerando Pix...`;
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Processando...`;
             btn.disabled = true;
+
+            let dadosEnvio = {
+                transaction_amount: totalAmount,
+                description: "Aluguel de Tendas e Som - EventLux",
+                payment_method_id: metodoPagamento,
+                payer: { name, email, cpf },
+                address: { street, number, cep }
+            };
+
+            if (metodoPagamento === 'credit_card' && cardForm) {
+                try {
+                    const cardToken = await cardForm.createCardToken();
+                    dadosEnvio.token = cardToken.token;
+                    dadosEnvio.installments = document.getElementById('form-checkout__installments').value;
+                } catch (e) {
+                    alert("Erro ao processar dados do cartão. Verifique as informações.");
+                    btn.innerHTML = `<i class="fa-solid fa-lock"></i> <span>Finalizar Pagamento</span>`;
+                    btn.disabled = false;
+                    return;
+                }
+            }
 
             try {
                 const response = await fetch("/api/pagamento", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        transaction_amount: totalAmount,
-                        description: "Aluguel de Tendas e Som - EventLux",
-                        payer: { name, email, cpf },
-                        address: { street, number, cep }
-                    })
+                    body: JSON.stringify(dadosEnvio)
                 });
-
                 const data = await response.json();
-                
-                if (data.point_of_interaction && data.point_of_interaction.transaction_data) {
-                    codigoPixCopiaECola = data.point_of_interaction.transaction_data.qr_code;
-                    const qrImage = document.getElementById('qr-code-image');
-                    
-                    qrImage.src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(codigoPixCopiaECola)}`;
-                    document.getElementById('copia-cola-texto').innerText = codigoPixCopiaECola;
 
+                if (metodoPagamento === 'pix' && data.point_of_interaction) {
+                    codigoPixCopiaECola = data.point_of_interaction.transaction_data.qr_code;
+                    document.getElementById('qr-code-image').src = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(codigoPixCopiaECola)}`;
+                    document.getElementById('copia-cola-texto').innerText = codigoPixCopiaECola;
                     document.getElementById('qr-container').classList.remove('hidden');
-                    document.getElementById('payment-success-msg').classList.remove('hidden');
+                    
+                    meuUltimoPaymentId = data.id;
+                    localStorage.setItem('meuUltimoPaymentId', meuUltimoPaymentId);
+                } else if (metodoPagamento === 'credit_card' && data.status === 'approved') {
+                    alert("Pagamento com cartão aprovado com sucesso!");
+                    meuUltimoPaymentId = data.id;
+                    localStorage.setItem('meuUltimoPaymentId', meuUltimoPaymentId);
                 } else {
-                    console.error("Erro na resposta do Mercado Pago:", data);
-                    alert("Erro ao gerar QR Code Pix. Verifique os dados informados.");
+                    alert("Pedido gerado / processado com sucesso!");
+                    meuUltimoPaymentId = data.id || Date.now();
+                    localStorage.setItem('meuUltimoPaymentId', meuUltimoPaymentId);
                 }
             } catch (error) {
                 console.error("Erro de conexão:", error);
                 alert("Erro de conexão com o servidor de pagamento.");
             } finally {
-                btn.innerHTML = `<i class="fa-solid fa-qrcode"></i> <span>Gerar QR Code Pix</span>`;
+                btn.innerHTML = `<i class="fa-solid fa-lock"></i> <span>Finalizar Pagamento</span>`;
                 btn.disabled = false;
             }
         }
+
+        async function verificarMensagensCliente() {
+            if (!meuUltimoPaymentId) return;
+            try {
+                const response = await fetch('/api/pedidos');
+                const pedidos = await response.json();
+                const meuPedido = pedidos.find(p => p.paymentId == meuUltimoPaymentId || p.id == meuUltimoPaymentId);
+
+                if (meuPedido && meuPedido.mensagemAgradecimento) {
+                    const chatBox = document.getElementById('live-chat-box');
+                    const chatContent = document.getElementById('live-chat-content');
+                    const badgeMsg = document.getElementById('badge-notificacao-msg');
+
+                    chatContent.innerHTML = `<p class="bg-indigo-600/20 p-2.5 rounded-xl border border-indigo-500/30">${meuPedido.mensagemAgradecimento}</p>`;
+                    chatBox.classList.remove('hidden');
+                    badgeMsg.classList.remove('hidden');
+                }
+            } catch (e) {
+                console.error("Erro ao buscar mensagens:", e);
+            }
+        }
+
+        setInterval(verificarMensagensCliente, 3000);
 
         window.onload = function() {
             renderTents();
