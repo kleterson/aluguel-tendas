@@ -19,7 +19,7 @@ app.use(express.static(path.join(__dirname, '.')));
 
 app.post('/api/pagamento', async (req, res) => {
     try {
-        const { transaction_amount, description, payer, address, payment_method_id, token, installments, issuer_id } = req.body;
+        const { transaction_amount, description, payer, address, payment_method_id, cardData } = req.body;
         const payment = new Payment(client);
 
         const metodoPagamento = payment_method_id || 'pix';
@@ -44,10 +44,21 @@ app.post('/api/pagamento', async (req, res) => {
             }
         };
 
-        if (metodoPagamento !== 'pix' && token) {
-            body.token = token;
-            body.installments = Number(installments) || 1;
-            body.issuer_id = Number(issuer_id) || undefined;
+        // Configuração caso o pagamento seja por cartão de crédito direto
+        if (metodoPagamento === 'credit_card' && cardData) {
+            body.token = cardData.token; // Caso utilize tokenização via SDK do MP
+            body.installments = Number(cardData.installments) || 1;
+            
+            // Se os dados do cartão vierem diretamente digitados sem token do SDK:
+            if (!cardData.token && cardData.number) {
+                body.card = {
+                    number: cardData.number,
+                    expiration_month: cardData.expiration_month,
+                    expiration_year: cardData.expiration_year,
+                    security_code: cardData.security_code,
+                    cardholder: cardData.cardholder
+                };
+            }
         }
 
         const idempotencyKey = crypto.randomUUID();
