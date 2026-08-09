@@ -39,7 +39,7 @@
                             <th class="p-4">Contato (E-mail / CPF)</th>
                             <th class="p-4">Endereço de Montagem</th>
                             <th class="p-4">Valor / Pagamento</th>
-                            <th class="p-4">Ação / Status</th>
+                            <th class="p-4">Status / Ação</th>
                         </tr>
                     </thead>
                     <tbody id="tabela-pedidos" class="divide-y divide-gray-800 text-sm">
@@ -66,7 +66,7 @@
             </div>
             <div class="space-y-1">
                 <label class="text-xs text-gray-400 font-semibold">Mensagem de Agradecimento:</label>
-                <textarea id="modal-mensagem" rows="3" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-indigo-500">Muito obrigado pela preferência! Seus equipamentos serão entregues na data combinada. Qualquer dúvida estamos à disposição!</textarea>
+                <textarea id="modal-mensagem" rows="3" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-indigo-500">Falta pouco para concluir o pagamento! 😊 Muito obrigado pela preferência, seus equipamentos serão enviados na data combinada. Qualquer dúvida estamos à disposição!</textarea>
             </div>
             <div class="flex space-x-3 pt-2">
                 <button onclick="fecharModal()" class="flex-1 px-4 py-2.5 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-300 font-semibold text-sm transition">Cancelar</button>
@@ -94,13 +94,16 @@
                     let statusHtml = '';
                     if (p.statusAdmin === 'visualizado') {
                         statusHtml = `
-                            <div class="text-xs text-emerald-400 font-bold mb-1"><i class="fa-solid fa-check-double"></i> Visualizado</div>
+                            <div class="text-xs text-emerald-400 font-bold mb-1"><i class="fa-solid fa-check-double"></i> Enviado ao Cliente</div>
                             <div class="text-xs text-gray-300"><b>Entrega:</b> ${p.dataHorarioEnvio}</div>
                         `;
                     } else {
                         statusHtml = `
-                            <button onclick="abrirModal(${p.id})" class="px-3 py-1.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-semibold text-xs transition flex items-center space-x-1.5 whitespace-nowrap">
-                                <i class="fa-solid fa-eye"></i> <span>Vi a Mensagem</span>
+                            <div class="mb-2">
+                                <span class="px-2 py-1 rounded-full text-xs font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20">Pagamento Pendente</span>
+                            </div>
+                            <button onclick="abrirModal(${p.id})" class="px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs transition flex items-center space-x-1.5 whitespace-nowrap">
+                                <i class="fa-solid fa-paper-plane"></i> <span>Enviar Aviso</span>
                             </button>
                         `;
                     }

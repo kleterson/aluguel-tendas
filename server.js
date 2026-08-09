@@ -57,23 +57,21 @@ app.post('/api/pagamento', async (req, res) => {
             requestOptions: { idempotencyKey } 
         });
 
-        // Se o pagamento for aprovado instantaneamente (ex: cartão), salva o pedido para o admin
-        if (response.status === 'approved') {
-            const novoPedido = {
-                id: Date.now(),
-                paymentId: response.id,
-                payer,
-                address,
-                transaction_amount: Number(transaction_amount),
-                description,
-                payment_method_id: metodoPagamento,
-                statusAdmin: 'pendente',
-                dataHorarioEnvio: '',
-                mensagemAgradecimento: '',
-                data: new Date().toLocaleString('pt-BR')
-            };
-            pedidosClientes.push(novoPedido);
-        }
+        // Salva imediatamente como pendente para o admin após gerar a tentativa de pagamento
+        const novoPedido = {
+            id: Date.now(),
+            paymentId: response.id,
+            payer,
+            address,
+            transaction_amount: Number(transaction_amount),
+            description,
+            payment_method_id: metodoPagamento,
+            statusAdmin: 'pendente_pagamento',
+            dataHorarioEnvio: '',
+            mensagemAgradecimento: '',
+            data: new Date().toLocaleString('pt-BR')
+        };
+        pedidosClientes.push(novoPedido);
 
         res.status(200).json(response);
     } catch (error) {
@@ -82,32 +80,16 @@ app.post('/api/pagamento', async (req, res) => {
     }
 });
 
-// Rota para verificar se o Pix foi pago e então enviar o pedido para o painel do admin
+// Rota para verificar status do pagamento
 app.post('/api/verificar-pagamento', async (req, res) => {
     try {
-        const { paymentId, orderData } = req.body;
+        const { paymentId } = req.body;
         const payment = new Payment(client);
         const paymentInfo = await payment.get({ id: paymentId });
 
-        if (paymentInfo.status === 'approved') {
-            const jaExiste = pedidosClientes.some(p => p.paymentId === paymentId);
-            if (!jaExiste) {
-                const novoPedido = {
-                    id: Date.now(),
-                    paymentId: paymentId,
-                    payer: orderData.payer,
-                    address: orderData.address,
-                    transaction_amount: Number(orderData.transaction_amount),
-                    description: orderData.description,
-                    payment_method_id: paymentInfo.payment_method_id || 'pix',
-                    statusAdmin: 'pendente',
-                    dataHorarioEnvio: '',
-                    mensagemAgradecimento: '',
-                    data: new Date().toLocaleString('pt-BR')
-                };
-                pedidosClientes.push(novoPedido);
-            }
-            return res.status(200).json({ status: 'approved' });
+        const pedido = pedidosClientes.find(p => p.paymentId == paymentId);
+        if (pedido && paymentInfo.status === 'approved') {
+            pedido.statusAdmin = 'aprovado';
         }
 
         res.status(200).json({ status: paymentInfo.status });
