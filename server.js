@@ -1,59 +1,75 @@
-const express = require('express');
-const cors = require('cors');
-const path = require('path');
-const { MercadoPagoConfig, Payment } = require('mercadopago');
-const crypto = require('crypto');
+const express = require('express'); [source: 4]
+const cors = require('cors'); [source: 4]
+const path = require('path'); [source: 4]
+const { MercadoPagoConfig, Payment } = require('mercadopago'); [source: 4]
+const crypto = require('crypto'); [source: 4]
 
-const app = express();
-const PORT = process.env.PORT || 3000;
+const app = express(); [source: 4]
+const PORT = process.env.PORT || 3000; [source: 4]
 
-const client = new MercadoPagoConfig({ 
-    accessToken: process.env.MP_ACCESS_TOKEN || 'APP_USR-517824253559090-073117-47dad5ef4352fb0abd9e5d717275dfa3-71867761' 
-});
+let pedidosClientes = []; [source: 4]
 
-app.use(cors());
-app.use(express.json());
-app.use(express.static(path.join(__dirname, '.')));
+const client = new MercadoPagoConfig({  [source: 4]
+    accessToken: process.env.MP_ACCESS_TOKEN || 'APP_USR-517824253559090-073117-47dad5ef4352fb0abd9e5d717275dfa3-71867761'  [source: 4]
+}); [source: 4]
 
-app.post('/api/pagamento', async (req, res) => {
-    try {
-        const { transaction_amount, description, payer, address } = req.body;
-        const payment = new Payment(client);
+app.use(cors()); [source: 4]
+app.use(express.json()); [source: 4]
+app.use(express.static(path.join(__dirname, '.'))); [source: 4]
 
-        const body = {
-            transaction_amount: Number(transaction_amount),
-            description: description,
-            payment_method_id: 'pix',
-            payer: {
-                email: payer.email,
-                first_name: payer.name.split(' ')[0],
-                last_name: payer.name.split(' ').slice(1).join(' ') || 'Cliente',
-                identification: {
-                    type: 'CPF',
-                    number: payer.cpf.replace(/\D/g, '')
-                },
-                address: {
-                    street_name: address.street,
-                    street_number: String(address.number),
-                    zip_code: address.cep.replace(/\D/g, '')
-                }
-            }
-        };
+app.post('/api/pagamento', async (req, res) => { [source: 4]
+    try { [source: 4]
+        const { transaction_amount, description, payer, address } = req.body; [source: 4]
+        const payment = new Payment(client); [source: 4]
 
-        const idempotencyKey = crypto.randomUUID();
+        const novoPedido = { [source: 4]
+            id: Date.now(), [source: 4]
+            payer, [source: 4]
+            address, [source: 4]
+            transaction_amount: Number(transaction_amount), [source: 4]
+            description, [source: 4]
+            data: new Date().toLocaleString('pt-BR') [source: 4]
+        }; [source: 4]
+        pedidosClientes.push(novoPedido); [source: 4]
 
-        const response = await payment.create({ 
-            body, 
-            requestOptions: { idempotencyKey } 
-        });
+        const body = { [source: 4]
+            transaction_amount: Number(transaction_amount), [source: 4]
+            description: description, [source: 4]
+            payment_method_id: 'pix', [source: 4]
+            payer: { [source: 4]
+                email: payer.email, [source: 4]
+                first_name: payer.name.split(' ')[0], [source: 4]
+                last_name: payer.name.split(' ').slice(1).join(' ') || 'Cliente', [source: 4]
+                identification: { [source: 4]
+                    type: 'CPF', [source: 4]
+                    number: payer.cpf.replace(/\D/g, '') [source: 4]
+                }, [source: 4]
+                address: { [source: 4]
+                    street_name: address.street, [source: 4]
+                    street_number: String(address.number), [source: 4]
+                    zip_code: address.cep.replace(/\D/g, '') [source: 4]
+                } [source: 4]
+            } [source: 4]
+        }; [source: 4]
 
-        res.status(200).json(response);
-    } catch (error) {
-        console.error("ERRO DETALHADO DO MERCADO PAGO:", error.api_response?.status ? error.api_response : error);
-        res.status(500).json({ error: error.message || "Erro interno no servidor" });
-    }
-});
+        const idempotencyKey = crypto.randomUUID(); [source: 4]
 
-app.listen(PORT, () => {
-    console.log(`Servidor rodando na porta ${PORT}`);
-});
+        const response = await payment.create({  [source: 4]
+            body,  [source: 4]
+            requestOptions: { idempotencyKey }  [source: 4]
+        }); [source: 4]
+
+        res.status(200).json(response); [source: 4]
+    } catch (error) { [source: 4]
+        console.error("ERRO DETALHADO DO MERCADO PAGO:", error.api_response?.status ? error.api_response : error); [source: 4]
+        res.status(500).json({ error: error.message || "Erro interno no servidor" }); [source: 4]
+    } [source: 4]
+}); [source: 4]
+
+app.get('/api/pedidos', (req, res) => { [source: 4]
+    res.json(pedidosClientes); [source: 4]
+}); [source: 4]
+
+app.listen(PORT, () => { [source: 4]
+    console.log(`Servidor rodando na porta ${PORT}`); [source: 4]
+}); [source: 4]
