@@ -38,12 +38,13 @@
                             <th class="p-4">Cliente</th>
                             <th class="p-4">Contato (E-mail / CPF)</th>
                             <th class="p-4">Endereço de Montagem</th>
-                            <th class="p-4">Valor</th>
+                            <th class="p-4">Valor / Pagamento</th>
+                            <th class="p-4">Ação / Status</th>
                         </tr>
                     </thead>
                     <tbody id="tabela-pedidos" class="divide-y divide-gray-800 text-sm">
                         <tr>
-                            <td colspan="5" class="p-6 text-center text-gray-500">Carregando pedidos...</td>
+                            <td colspan="6" class="p-6 text-center text-gray-500">Carregando pedidos...</td>
                         </tr>
                     </tbody>
                 </table>
@@ -51,22 +52,59 @@
         </div>
     </div>
 
+    <!-- Modal para enviar agendamento e agradecimento -->
+    <div id="modal-agendar" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+        <div class="glass w-full max-w-md p-6 rounded-2xl border border-gray-800 space-y-4">
+            <h3 class="text-lg font-bold text-white flex items-center space-x-2">
+                <i class="fa-solid fa-calendar-check text-indigo-400"></i>
+                <span>Definir Entrega e Agradecimento</span>
+            </h3>
+            <input type="hidden" id="modal-pedido-id">
+            <div class="space-y-1">
+                <label class="text-xs text-gray-400 font-semibold">Dia e Horário da Entrega:</label>
+                <input type="text" id="modal-data-horario" placeholder="Ex: 15/08/2026 às 14:00" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-indigo-500">
+            </div>
+            <div class="space-y-1">
+                <label class="text-xs text-gray-400 font-semibold">Mensagem de Agradecimento:</label>
+                <textarea id="modal-mensagem" rows="3" class="w-full bg-gray-900 border border-gray-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-indigo-500">Muito obrigado pela preferência! Seus equipamentos serão entregues na data combinada. Qualquer dúvida estamos à disposição!</textarea>
+            </div>
+            <div class="flex space-x-3 pt-2">
+                <button onclick="fecharModal()" class="flex-1 px-4 py-2.5 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-300 font-semibold text-sm transition">Cancelar</button>
+                <button onclick="enviarAgendamento()" class="flex-1 px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm transition">Salvar e Enviar</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         async function carregarPedidos() {
             const tbody = document.getElementById('tabela-pedidos');
-            tbody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-gray-500">Buscando dados...</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-gray-500">Buscando dados...</td></tr>`;
 
             try {
                 const response = await fetch('/api/pedidos');
                 const pedidos = await response.json();
 
                 if (pedidos.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-gray-500">Nenhum pedido registrado até o momento.</td></tr>`;
+                    tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-gray-500">Nenhum pedido registrado até o momento.</td></tr>`;
                     return;
                 }
 
                 tbody.innerHTML = '';
                 pedidos.reverse().forEach(p => {
+                    let statusHtml = '';
+                    if (p.statusAdmin === 'visualizado') {
+                        statusHtml = `
+                            <div class="text-xs text-emerald-400 font-bold mb-1"><i class="fa-solid fa-check-double"></i> Visualizado</div>
+                            <div class="text-xs text-gray-300"><b>Entrega:</b> ${p.dataHorarioEnvio}</div>
+                        `;
+                    } else {
+                        statusHtml = `
+                            <button onclick="abrirModal(${p.id})" class="px-3 py-1.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-semibold text-xs transition flex items-center space-x-1.5 whitespace-nowrap">
+                                <i class="fa-solid fa-eye"></i> <span>Vi a Mensagem</span>
+                            </button>
+                        `;
+                    }
+
                     tbody.innerHTML += `
                         <tr class="hover:bg-gray-800/30 transition">
                             <td class="p-4 text-gray-300 whitespace-nowrap">${p.data}</td>
@@ -79,13 +117,57 @@
                                 <div>${p.address.street}, ${p.address.number}</div>
                                 <div class="text-xs text-indigo-400">CEP: ${p.address.cep}</div>
                             </td>
-                            <td class="p-4 font-bold text-emerald-400 whitespace-nowrap">R$ ${p.transaction_amount.toFixed(2)}</td>
+                            <td class="p-4 whitespace-nowrap">
+                                <div class="font-bold text-emerald-400">R$ ${p.transaction_amount.toFixed(2)}</div>
+                                <div class="text-xs text-gray-400 uppercase font-semibold">Método: ${p.payment_method_id || 'pix'}</div>
+                            </td>
+                            <td class="p-4 whitespace-nowrap">${statusHtml}</td>
                         </tr>
                     `;
                 });
             } catch (error) {
                 console.error("Erro ao carregar pedidos:", error);
-                tbody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-red-400">Erro ao carregar os dados do servidor.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-red-400">Erro ao carregar os dados do servidor.</td></tr>`;
+            }
+        }
+
+        function abrirModal(id) {
+            document.getElementById('modal-pedido-id').value = id;
+            document.getElementById('modal-agendar').classList.remove('hidden');
+            document.getElementById('modal-agendar').classList.add('flex');
+        }
+
+        function fecharModal() {
+            document.getElementById('modal-agendar').classList.remove('flex');
+            document.getElementById('modal-agendar').classList.add('hidden');
+        }
+
+        async function enviarAgendamento() {
+            const id = document.getElementById('modal-pedido-id').value;
+            const dataHorarioEnvio = document.getElementById('modal-data-horario').value;
+            const mensagemAgradecimento = document.getElementById('modal-mensagem').value;
+
+            if (!dataHorarioEnvio) {
+                alert('Por favor, preencha o dia e horário da entrega.');
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/pedidos/${id}/atualizar`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ dataHorarioEnvio, mensagemAgradecimento })
+                });
+
+                if (response.ok) {
+                    fecharModal();
+                    carregarPedidos();
+                } else {
+                    alert('Erro ao atualizar o pedido.');
+                }
+            } catch (error) {
+                console.error("Erro:", error);
+                alert('Erro de conexão com o servidor.');
             }
         }
 
