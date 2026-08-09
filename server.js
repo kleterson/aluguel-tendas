@@ -1,57 +1,52 @@
 const express = require('express');
 const cors = require('cors');
-const axios = require('axios');
 const path = require('path');
+const { MercadoPagoConfig, Payment } = require('mercadopago');
 
 const app = express();
-app.use(express.json());
+const PORT = process.env.PORT || 3000;
+
+const client = new MercadoPagoConfig({ 
+    accessToken: process.env.MP_ACCESS_TOKEN || 'APP_USR-517824253559090-073117-47dad5ef4352fb0abd9e5d717275dfa3-71867761' 
+});
+
 app.use(cors());
+app.use(express.json());
+app.use(express.static(path.join(__dirname, '.')));
 
-// Servir os arquivos estáticos da pasta
-app.use(express.static(path.join(__dirname)));
-
-// Rota para gerar o Pix no Mercado Pago com dados do cliente e endereço
 app.post('/api/pagamento', async (req, res) => {
-    const { transaction_amount, description, payer, address } = req.body;
-    const MP_TOKEN = "APP_USR-517824253559090-073117-47dad5ef4352fb0abd9e5d717275dfa3-71867761";
-
     try {
-        const paymentData = {
+        const { transaction_amount, description, payer, address } = req.body;
+        const payment = new Payment(client);
+
+        const body = {
             transaction_amount: Number(transaction_amount),
-            description: description || "Aluguel de Tendas e Som",
-            payment_method_id: "pix",
+            description: description,
+            payment_method_id: 'pix',
             payer: {
-                email: payer?.email || "cliente@eventlux.com",
-                first_name: payer?.name ? payer.name.split(' ')[0] : "Cliente",
-                last_name: payer?.name ? payer.name.split(' ').slice(1).join(' ') || "EventLux" : "EventLux",
+                email: payer.email,
+                first_name: payer.name.split(' ')[0],
+                last_name: payer.name.split(' ').slice(1).join(' ') || 'Cliente',
                 identification: {
-                    type: "CPF",
-                    // Usa o CPF enviado ou um padrão de teste válido se não preenchido
-                    number: payer?.cpf ? payer.cpf.replace(/\D/g, '') : "19119119119"
+                    type: 'CPF',
+                    number: payer.cpf
                 },
                 address: {
-                    street_name: address?.street || "Rua do Evento",
-                    street_number: address?.number || "123",
-                    zip_code: address?.cep ? address.cep.replace(/\D/g, '') : "01001000"
+                    street_name: address.street,
+                    street_number: String(address.number),
+                    zip_code: address.cep.replace(/\D/g, '')
                 }
             }
         };
 
-        const response = await axios.post('https://api.mercadopago.com/v1/payments', paymentData, {
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${MP_TOKEN}`
-            }
-        });
-
-        res.json(response.data);
+        const response = await payment.create({ body });
+        res.status(200).json(response);
     } catch (error) {
-        console.error("ERRO DETALHADO DO MERCADO PAGO:", JSON.stringify(error.response?.data, null, 2));
-        res.status(500).json({ error: "Erro ao gerar pagamento Pix", details: error.response?.data });
+        console.error("Erro detalhado do Mercado Pago:", error.api_response?.status ? error.api_response : error);
+        res.status(500).json({ error: error.message || "Erro interno no servidor" });
     }
 });
 
-const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Servidor rodando na porta ${PORT}`);
 });
