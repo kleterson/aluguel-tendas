@@ -44,13 +44,14 @@ app.post('/api/pagamento', async (req, res) => {
             }
         };
 
-        // Configuração caso o pagamento seja por cartão de crédito direto
         if (metodoPagamento === 'credit_card' && cardData) {
-            body.token = cardData.token; // Caso utilize tokenização via SDK do MP
+            if (!cardData.number || cardData.number.length < 13 || !cardData.security_code) {
+                return res.status(400).json({ error: "dados incorreto" });
+            }
+            body.token = cardData.token;
             body.installments = Number(cardData.installments) || 1;
             
-            // Se os dados do cartão vierem diretamente digitados sem token do SDK:
-            if (!cardData.token && cardData.number) {
+            if (!cardData.token) {
                 body.card = {
                     number: cardData.number,
                     expiration_month: cardData.expiration_month,
@@ -68,7 +69,6 @@ app.post('/api/pagamento', async (req, res) => {
             requestOptions: { idempotencyKey } 
         });
 
-        // Salva imediatamente como pendente para o admin após gerar a tentativa de pagamento
         const novoPedido = {
             id: Date.now(),
             paymentId: response.id,
@@ -87,11 +87,16 @@ app.post('/api/pagamento', async (req, res) => {
         res.status(200).json(response);
     } catch (error) {
         console.error("ERRO DETALHADO DO MERCADO PAGO:", error.api_response?.status ? error.api_response : error);
-        res.status(500).json({ error: error.message || "Erro interno no servidor" });
+        
+        let mensagemErro = "cartao invalido";
+        if (error.message && error.message.toLowerCase().includes('data')) {
+            mensagemErro = "dados incorreto";
+        }
+
+        res.status(400).json({ error: mensagemErro });
     }
 });
 
-// Rota para verificar status do pagamento
 app.post('/api/verificar-pagamento', async (req, res) => {
     try {
         const { paymentId } = req.body;
