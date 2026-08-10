@@ -91,28 +91,46 @@
                 pedidos.reverse().forEach(p => {
                     let statusHtml = '';
                     let statusDoPedido = p.statusAdmin || 'pendente_pagamento';
+                    let mensagensPausadas = p.mensagensPausadas || false;
+
+                    let botaoPausaTexto = mensagensPausadas ? 'Retomar Mensagem' : 'Pausar Mensagem';
+                    let botaoPausaCor = mensagensPausadas ? 'bg-amber-600 hover:bg-amber-500 text-white' : 'bg-gray-800 hover:bg-gray-700 text-gray-300 border border-gray-700';
+                    let iconePausa = mensagensPausadas ? 'fa-play' : 'fa-pause';
 
                     if (statusDoPedido === 'aprovado') {
                         statusHtml = `
                             <div class="mb-2">
                                 <span class="px-2 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Pagamento Concluído</span>
                             </div>
-                            <button onclick="abrirModal(${p.id}, 'aprovado')" class="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs transition flex items-center space-x-1.5 whitespace-nowrap">
-                                <i class="fa-solid fa-paper-plane"></i> <span>Enviar Agradecimento</span>
-                            </button>
+                            <div class="flex flex-col gap-2">
+                                <button onclick="abrirModal(${p.id}, 'aprovado')" class="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs transition flex items-center justify-center space-x-1.5 whitespace-nowrap">
+                                    <i class="fa-solid fa-paper-plane"></i> <span>Enviar Agradecimento</span>
+                                </button>
+                                <button onclick="togglePausarMensagemCliente(${p.id}, ${!mensagensPausadas})" class="px-3 py-1.5 rounded-xl ${botaoPausaCor} font-semibold text-xs transition flex items-center justify-center space-x-1.5 whitespace-nowrap">
+                                    <i class="fa-solid ${iconePausa}"></i> <span>${botaoPausaTexto}</span>
+                                </button>
+                            </div>
                         `;
                     } else if (statusDoPedido === 'visualizado') {
                         statusHtml = `
-                            <div class="text-xs text-emerald-400 font-bold mb-1"><i class="fa-solid fa-check-double"></i> Aviso Enviado</div>
+                            <div class="text-xs text-emerald-400 font-bold mb-2"><i class="fa-solid fa-check-double"></i> Aviso Enviado</div>
+                            <button onclick="togglePausarMensagemCliente(${p.id}, ${!mensagensPausadas})" class="px-3 py-1.5 rounded-xl ${botaoPausaCor} font-semibold text-xs transition flex items-center justify-center space-x-1.5 whitespace-nowrap">
+                                <i class="fa-solid ${iconePausa}"></i> <span>${botaoPausaTexto}</span>
+                            </button>
                         `;
                     } else {
                         statusHtml = `
                             <div class="mb-2">
                                 <span class="px-2 py-1 rounded-full text-xs font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20">Pagamento Pendente</span>
                             </div>
-                            <button onclick="abrirModal(${p.id}, 'pendente')" class="px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs transition flex items-center space-x-1.5 whitespace-nowrap">
-                                <i class="fa-solid fa-paper-plane"></i> <span>Enviar Aviso</span>
-                            </button>
+                            <div class="flex flex-col gap-2">
+                                <button onclick="abrirModal(${p.id}, 'pendente')" class="px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs transition flex items-center justify-center space-x-1.5 whitespace-nowrap">
+                                    <i class="fa-solid fa-paper-plane"></i> <span>Enviar Aviso</span>
+                                </button>
+                                <button onclick="togglePausarMensagemCliente(${p.id}, ${!mensagensPausadas})" class="px-3 py-1.5 rounded-xl ${botaoPausaCor} font-semibold text-xs transition flex items-center justify-center space-x-1.5 whitespace-nowrap">
+                                    <i class="fa-solid ${iconePausa}"></i> <span>${botaoPausaTexto}</span>
+                                </button>
+                            </div>
                         `;
                     }
 
@@ -139,6 +157,25 @@
             } catch (error) {
                 console.error("Erro ao carregar pedidos:", error);
                 tbody.innerHTML = `<tr><td colspan="6" class="p-6 text-center text-red-400">Erro ao carregar os dados do servidor.</td></tr>`;
+            }
+        }
+
+        async function togglePausarMensagemCliente(id, pausar) {
+            try {
+                const response = await fetch(`/api/pedidos/${id}/pausar`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ mensagensPausadas: pausar })
+                });
+
+                if (response.ok) {
+                    carregarPedidos();
+                } else {
+                    alert('Erro ao atualizar o status de pausa da mensagem.');
+                }
+            } catch (error) {
+                console.error("Erro:", error);
+                alert('Erro de conexão com o servidor.');
             }
         }
 
