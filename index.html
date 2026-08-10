@@ -84,6 +84,88 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Seção de Comentários / Avaliações -->
+            <div class="space-y-8 pt-8">
+                <div class="text-center space-y-2">
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-white">O que nossos clientes dizem</h2>
+                    <p class="text-gray-400 text-sm">Avaliações reais de quem confiou na EventLux</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Comentário 1 -->
+                    <div class="glass p-6 rounded-2xl border border-gray-800 flex flex-col justify-between space-y-4">
+                        <div class="space-y-3">
+                            <div class="flex items-center space-x-1 text-amber-400 text-sm">
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <span class="ml-2 font-bold text-white text-xs bg-amber-500/20 px-2 py-0.5 rounded-full border border-amber-500/30 flex items-center gap-1">
+                                    5.0 <i class="fa-solid fa-sparkles text-amber-300 animate-pulse"></i>
+                                </span>
+                            </div>
+                            <p class="text-gray-300 text-sm italic">"As tendas cristal e o som superaram todas as expectativas do nosso casamento. Montagem impecável e pontual!"</p>
+                        </div>
+                        <div class="flex items-center space-x-3 pt-4 border-t border-gray-800/80">
+                            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200" alt="Cliente" class="w-11 h-11 rounded-full object-cover border-2 border-indigo-500/50 shadow-md">
+                            <div>
+                                <h4 class="font-bold text-white text-sm">Juliana Mendes</h4>
+                                <span class="text-xs text-gray-400">Casamento em São Paulo</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Comentário 2 -->
+                    <div class="glass p-6 rounded-2xl border border-gray-800 flex flex-col justify-between space-y-4">
+                        <div class="space-y-3">
+                            <div class="flex items-center space-x-1 text-amber-400 text-sm">
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <span class="ml-2 font-bold text-white text-xs bg-amber-500/20 px-2 py-0.5 rounded-full border border-amber-500/30 flex items-center gap-1">
+                                    5.0 <i class="fa-solid fa-sparkles text-amber-300 animate-pulse"></i>
+                                </span>
+                            </div>
+                            <p class="text-gray-300 text-sm italic">"Contratamos o kit de som line array para um evento corporativo e a qualidade acústica foi perfeita do início ao fim."</p>
+                        </div>
+                        <div class="flex items-center space-x-3 pt-4 border-t border-gray-800/80">
+                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200" alt="Cliente" class="w-11 h-11 rounded-full object-cover border-2 border-indigo-500/50 shadow-md">
+                            <div>
+                                <h4 class="font-bold text-white text-sm">Marcos Vinicius</h4>
+                                <span class="text-xs text-gray-400">Evento Corporativo</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Comentário 3 -->
+                    <div class="glass p-6 rounded-2xl border border-gray-800 flex flex-col justify-between space-y-4">
+                        <div class="space-y-3">
+                            <div class="flex items-center space-x-1 text-amber-400 text-sm">
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <span class="ml-2 font-bold text-white text-xs bg-amber-500/20 px-2 py-0.5 rounded-full border border-amber-500/30 flex items-center gap-1">
+                                    5.0 <i class="fa-solid fa-sparkles text-amber-300 animate-pulse"></i>
+                                </span>
+                            </div>
+                            <p class="text-gray-300 text-sm italic">"Atendimento excelente, facilidade no pagamento e produtos de primeiríssima qualidade. Recomendo de olhos fechados!"</p>
+                        </div>
+                        <div class="flex items-center space-x-3 pt-4 border-t border-gray-800/80">
+                            <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=200" alt="Cliente" class="w-11 h-11 rounded-full object-cover border-2 border-indigo-500/50 shadow-md">
+                            <div>
+                                <h4 class="font-bold text-white text-sm">Camila Ribeiro</h4>
+                                <span class="text-xs text-gray-400">Aniversário de 15 Anos</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </section>
 
         <section id="page-tents" class="page-section hidden space-y-8">
@@ -593,7 +675,6 @@
             switchPage('cart');
             document.getElementById('live-chat-box').classList.add('hidden');
             
-            // Mantém o QR code visível caso o método selecionado seja Pix e já tenha sido gerado
             const metodoPagamento = document.getElementById('payment-method-select').value;
             if (metodoPagamento === 'pix' && codigoPixCopiaECola) {
                 document.getElementById('qr-container').classList.remove('hidden');
