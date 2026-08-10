@@ -80,6 +80,7 @@ app.post('/api/pagamento', async (req, res) => {
             statusAdmin: 'pendente_pagamento',
             dataHorarioEnvio: '',
             mensagemAgradecimento: '',
+            mensagensPausadas: false,
             data: new Date().toLocaleString('pt-BR')
         };
         pedidosClientes.push(novoPedido);
@@ -128,6 +129,18 @@ app.post('/api/pedidos/:id/atualizar', (req, res) => {
         pedido.dataHorarioEnvio = dataHorarioEnvio;
         pedido.mensagemAgradecimento = mensagemAgradecimento;
         return res.status(200).json({ success: true });
+    }
+    res.status(404).json({ error: 'Pedido não encontrado' });
+});
+
+app.post('/api/pedidos/:id/pausar', (req, res) => {
+    const { id } = req.params;
+    const { mensagensPausadas } = req.body;
+
+    const pedido = pedidosClientes.find(p => p.id == id);
+    if (pedido) {
+        pedido.mensagensPausadas = mensagensPausadas;
+        return res.status(200).json({ success: true, mensagensPausadas: pedido.mensagensPausadas });
     }
     res.status(404).json({ error: 'Pedido não encontrado' });
 });
